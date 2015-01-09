@@ -29,7 +29,7 @@ cosdist=function(z=0,H0=100,OmegaM=0.3,OmegaL=1-OmegaM,age=FALSE){
         return = c(z = z, CoDistLoS = CoDistLoS, LumDist = LumDist, AngDist = AngDist, CoDistTran=CoDistTran, DistMod = DistMod, AngArcSec = AngArcSec, CoVolGpc3 = CoVol/1e+09, HubTime = HT, UniAgeNow = UniAge, UniAgeAtz = UniAge - zAge, TravelTime = zAge)
       }
       else {
-        return = c(z = z, CoDistLoS = CoDistLoS, CoDistTran=CoDistTran, LumDist = LumDist, AngDist = AngDist, CoDistTran=CoDistTran, DistMod = DistMod, AngArcSec = AngArcSec, CoVolGpc3 = CoVol/1e+09)
+        return = c(z = z, CoDistLoS = CoDistLoS, LumDist = LumDist, AngDist = AngDist, CoDistTran=CoDistTran, DistMod = DistMod, AngArcSec = AngArcSec, CoVolGpc3 = CoVol/1e+09)
       }
     }
     return = as.data.frame(t(Vectorize(temp)(z = z, H0 = H0, OmegaM = OmegaM, OmegaL = OmegaL, OmegaK = OmegaK)))

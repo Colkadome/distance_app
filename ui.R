@@ -47,35 +47,35 @@ shinyUI(fluidPage(
                  ),
                  fluidRow(
                    selectInput("plotAxis", label="x Axis", choices = list("z"=1,
-                                                                          "Travel Time"=2
+                                                                          "Travel Time"=12
                    ),selected=1),
                    checkboxInput("plotLogY", label = "Log y axis", value = FALSE)
                  ),
                  fluidRow(
                    h4("Custom Plot:"),
                    selectInput(inputId="customXAxis", label="x Axis", choices = list("z"=1,
-                                                                                     "Travel Time"=2,
-                                                                                     "Comoving Radial Distance LoS"=3,
-                                                                                     "Comoving Radial Distance Tran"=4,
-                                                                                     "Luminosity Distance"=5,
+                                                                                     "Comoving Radial Distance LoS"=2,
+                                                                                     "Luminosity Distance"=3,
+                                                                                     "Angular Size Distance"=4,
+                                                                                     "Comoving Radial Distance Tran"=5,
                                                                                      "DistMod"=6,
-                                                                                     "Angular Size Distance"=7,
-                                                                                     "Angular Size"=8,
-                                                                                     "Comoving Volume"=9,
-                                                                                     "Universe Age at z"=10
-                   ),selected=2),
+                                                                                     "Angular Size"=7,
+                                                                                     "Comoving Volume"=8,
+                                                                                     "Universe Age at z"=11,
+                                                                                     "Travel Time"=12
+                   ),selected=12),
                    checkboxInput("customLogX", label = "Log x axis", value = FALSE),
                    selectInput(inputId="customYAxis", label="y Axis", choices = list("z"=1,
-                                                                                     "Travel Time"=2,
-                                                                                     "Comoving Radial Distance LoS"=3,
-                                                                                     "Comoving Radial Distance Tran"=4,
-                                                                                     "Luminosity Distance"=5,
+                                                                                     "Comoving Radial Distance LoS"=2,
+                                                                                     "Luminosity Distance"=3,
+                                                                                     "Angular Size Distance"=4,
+                                                                                     "Comoving Radial Distance Tran"=5,
                                                                                      "DistMod"=6,
-                                                                                     "Angular Size Distance"=7,
-                                                                                     "Angular Size"=8,
-                                                                                     "Comoving Volume"=9,
-                                                                                     "Universe Age at z"=10
-                   ),selected=8),
+                                                                                     "Angular Size"=7,
+                                                                                     "Comoving Volume"=8,
+                                                                                     "Universe Age at z"=11,
+                                                                                     "Travel Time"=12
+                   ),selected=7),
                    checkboxInput("customLogY", label = "Log y axis", value = FALSE)
                  ),
                  fluidRow(
@@ -128,6 +128,46 @@ shinyUI(fluidPage(
              p(a("Wright E.L., 2006, PASP, 118, 1711", href="http://arxiv.org/abs/astro-ph/0609593", target="_blank")),
              br(),
              div("Written by Joseph Dunne (2015)", style="font-size:10px; color:grey;", align="center")
-    )
+    ),
+    tabPanel("R Code",
+             p("Basic cosmological calculator R code used server-side to generate outputs."),
+             p("Written by Aaron Robotham (see", span("Info", style='color:#08c'), "tab for references)."),
+             div(
+             p("
+cosdist=function(z=0,H0=100,OmegaM=0.3,OmegaL=1-OmegaM,age=FALSE){
+  OmegaK=1-OmegaM-OmegaL
+  temp = function(z, H0, OmegaM, OmegaL, OmegaK) {
+    Einv = function(z, OmegaM, OmegaL, OmegaK) {1/sqrt(OmegaM * (1 + z)^3 + OmegaK * (1 + z)^2 + OmegaL)}
+    HubDist = (299792.458/H0)
+    CoDistLoS = HubDist * integrate(Einv, 0, z, OmegaM = OmegaM, OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000)$value
+
+    if(OmegaK>0){CoDistTran = HubDist*(1/sqrt(OmegaK))*sinh(sqrt(OmegaK)*CoDistLoS/HubDist)}
+    if(OmegaK==0){CoDistTran = CoDistLoS}
+    if(OmegaK<0){CoDistTran = HubDist*(1/sqrt(abs(OmegaK)))*sin(sqrt(abs(OmegaK))*CoDistLoS/HubDist)}
+
+    AngDist = CoDistTran/(1 + z)
+    LumDist = (1+z) * CoDistTran
+    DistMod = 5 * log10(LumDist) + 25
+    AngArcSec = AngDist * (pi/(180 * 60 * 60)) * 1000
+
+    if(OmegaK>0){CoVol = (4*pi*HubDist^3/(2*OmegaK))*((CoDistTran/HubDist)*sqrt(1+OmegaK*(CoDistTran/HubDist)^2)-(1/sqrt(abs(OmegaK)))*asinh(sqrt(abs(OmegaK))*(CoDistTran/HubDist)))}
+    if(OmegaK==0){CoVol = (4/3) * pi * CoDistLoS^3}
+    if(OmegaK<0){CoVol = (4*pi*HubDist^3/(2*OmegaK))*((CoDistTran/HubDist)*sqrt(1+OmegaK*(CoDistTran/HubDist)^2)-(1/sqrt(abs(OmegaK)))*asin(sqrt(abs(OmegaK))*(CoDistTran/HubDist)))}
+
+    if(age){
+      Einvz = function(z, OmegaM, OmegaL, OmegaK){1/(sqrt(OmegaM * (1 + z)^3 + OmegaK * (1 + z)^2 + OmegaL) * (1 + z))}
+      HT = 3.08568025e+19/(H0 * 31556926)
+      UniAge = HT * integrate(Einvz, 0, Inf, OmegaM = OmegaM, OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000)$value
+      zAge = HT * integrate(Einvz, 0, z, OmegaM = OmegaM, OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000)$value
+    }
+    if(age){
+      return = c(z = z, CoDistLoS = CoDistLoS, LumDist = LumDist, AngDist = AngDist, CoDistTran=CoDistTran, DistMod = DistMod, AngArcSec = AngArcSec, CoVolGpc3 = CoVol/1e+09, HubTime = HT, UniAgeNow = UniAge, UniAgeAtz = UniAge - zAge, TravelTime = zAge)
+    }else{
+      return = c(z = z, CoDistLoS = CoDistLoS, LumDist = LumDist, AngDist = AngDist, CoDistTran=CoDistTran, DistMod = DistMod, AngArcSec = AngArcSec, CoVolGpc3 = CoVol/1e+09)
+    }
+  }
+  return = as.data.frame(t(Vectorize(temp)(z = z, H0 = H0, OmegaM = OmegaM, OmegaL = OmegaL, OmegaK = OmegaK)))
+}", style="white-space: pre-wrap; color:blue;"), style="background-color:whitesmoke")
+             )
   )
 ))

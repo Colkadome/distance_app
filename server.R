@@ -2,15 +2,17 @@ source("cosdist.R")
 library("magicaxis")
 
 lookUpTable <- list(list("label"="z", "unit"="", "val"="z"),
-                    list("label"="Travel Time", "unit"="(yr)", "val"="TravelTime"),
                     list("label"="Comoving Radial Distance LoS", "unit"="(Mpc)", "val"="CoDistLoS"),
-                    list("label"="Comoving Radial Distance Tran", "unit"="(Mpc)", "val"="CoDistTran"),
                     list("label"="Luminosity Distance", "unit"="(Mpc)", "val"="LumDist"),
-                    list("label"="DistMod", "unit"="(mag)", "val"="DistMod"),
                     list("label"="Angular Size Distance", "unit"="(Mpc)", "val"="AngDist"),
+                    list("label"="Comoving Radial Distance Tran", "unit"="(Mpc)", "val"="CoDistTran"),
+                    list("label"="DistMod", "unit"="(mag)", "val"="DistMod"),
                     list("label"="Angular Size", "unit"="(kpc/arcsec)", "val"="AngArcSec"),
                     list("label"="Comoving Volume", "unit"="(Gpc³)", "val"="CoVolGpc3"),
-                    list("label"="Universe Age at z", "unit"="(yr)", "val"="UniAgeAtz")
+                    list("label"="Hubble Time", "unit"="(yr)", "val"="HubTime"),
+                    list("label"="Universe Age Now", "unit"="(yr)", "val"="UniAgeNow"),
+                    list("label"="Universe Age at z", "unit"="(yr)", "val"="UniAgeAtz"),
+                    list("label"="Travel Time", "unit"="(yr)", "val"="TravelTime")
 )
 
 shinyServer(function(input, output) {
@@ -131,6 +133,8 @@ shinyServer(function(input, output) {
     yAxis <- lookUpTable[[as.numeric(input$customYAxis)]]
     useLogX <- input$customLogX
     useLogY <- input$customLogY
+    
+    tempfunc = approxfun(r[[xAxis$val]], r[[yAxis$val]], method="linear")
     
     # check for log
     log <- ''
