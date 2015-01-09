@@ -1,5 +1,18 @@
 source("cosdist.R")
 library("magicaxis")
+
+lookUpTable <- list(list("label"="z", "unit"="", "val"="z"),
+                    list("label"="Travel Time", "unit"="(yr)", "val"="TravelTime"),
+                    list("label"="Comoving Radial Distance LoS", "unit"="(Mpc)", "val"="CoDistLoS"),
+                    list("label"="Comoving Radial Distance Tran", "unit"="(Mpc)", "val"="CoDistTran"),
+                    list("label"="Luminosity Distance", "unit"="(Mpc)", "val"="LumDist"),
+                    list("label"="DistMod", "unit"="(mag)", "val"="DistMod"),
+                    list("label"="Angular Size Distance", "unit"="(Mpc)", "val"="AngDist"),
+                    list("label"="Angular Size", "unit"="(kpc/arcsec)", "val"="AngArcSec"),
+                    list("label"="Comoving Volume", "unit"="(Gpc³)", "val"="CoVolGpc3"),
+                    list("label"="Universe Age at z", "unit"="(yr)", "val"="UniAgeAtz")
+)
+
 shinyServer(function(input, output) {
   
   output$calcOut <- renderUI ({
@@ -19,16 +32,17 @@ shinyServer(function(input, output) {
     }
     
     # get results
-    l <- cosdist(z, H0, OmegaM, OmegaL, TRUE)
+    r <- cosdist(z, H0, OmegaM, OmegaL, TRUE)
+    
+    # build output
+    l <- paste0("<h4>For z = ", z, ":</h4>")
+    for(t in lookUpTable) {
+      if(t$label != "z")
+        l <- append(l, paste0("<p>The <b>",t$label,"</b> is <span style='color:#08c;'>", r[[t$val]], "</span> ", t$unit, "</p>"))
+    }
     
     # the output
-    list(
-      HTML("<h4>For z = ", z, ":</h4>"),
-      HTML("<p>The <b>comoving distance (Line of Sight)</b> is <span style='color:#08c;'>", l$CoDistLoS, "</span> Mpc</p>"),
-      HTML("<p>The <b>angular distance</b> is <span style='color:#08c;'>", l$AngDist, " </span> Mpc</p>"),
-      HTML("<p>The <b>luminosity distance</b> is <span style='color:#08c;'>", l$LumDist, " </span> Mpc</p>"),
-      HTML("<p>The <b>comoving volume</b> is <span style='color:#08c;'>", l$CoVol, " </span>Gpc<sup>3</sup></p>")
-    )
+    HTML(l)
   })
   
   plotResult <- reactive({
@@ -70,7 +84,7 @@ shinyServer(function(input, output) {
     # get inputs
     input$submitPlot
     r <- isolate(plotResult())
-    xAxis <- input$plotAxis
+    xAxis <- lookUpTable[[as.numeric(input$plotAxis)]]
     useLog <- input$plotLogY
     
     # check for log
@@ -84,29 +98,12 @@ shinyServer(function(input, output) {
       ymin <- 1
     
     # plot
-    magplot(x=r[[xAxis]], y=r$LumDist, ylim=c(ymin, ymax), main=paste("Distance vs ", xAxis), xlab=xAxis, ylab="Distance (Mpc)", type="l", col='red',log=log)
-    lines(x=r[[xAxis]], y=r$CoDistTran, type='l', lty=2, col='black')
-    lines(x=r[[xAxis]], y=r$CoDistLoS, type='l', col='black')
-    lines(x=r[[xAxis]], y=r$AngDist, type='l', col='blue')
+    magplot(x=r[[xAxis$val]], y=r$LumDist, ylim=c(ymin, ymax), main=paste("Distance vs ", xAxis$label), xlab=paste(xAxis$label, xAxis$unit), ylab="Distance (Mpc)", type="l", col='red',log=log)
+    lines(x=r[[xAxis$val]], y=r$CoDistTran, type='l', lty=2, col='black')
+    lines(x=r[[xAxis$val]], y=r$CoDistLoS, type='l', col='black')
+    lines(x=r[[xAxis$val]], y=r$AngDist, type='l', col='blue')
     legend("topleft",bty='n',legend=c('Co Dist (LoS)','Co Dist (tran)','Lum Dist','Ang Dist'),col=c('black','black','red','blue'),lty=c(1,2,1,1))
   })
-  
-  lookUpAxis = function(sel) {
-    table <- list(list("label"="z", "unit"="", "val"="z"),
-                  list("label"="Travel Time", "unit"="(yr)", "val"="TravelTime"),
-                  list("label"="Comoving Radial Distance LoS", "unit"="(Mpc)", "val"="CoDistLoS"),
-                  list("label"="Comoving Radial Distance Tran", "unit"="(Mpc)", "val"="CoDistTran"),
-                  list("label"="Luminosity Distance", "unit"="(Mpc)", "val"="LumDist"),
-                  list("label"="DistMod", "unit"="(mag)", "val"="DistMod"),
-                  list("label"="Angular Size Distance", "unit"="(Mpc)", "val"="AngDist"),
-                  list("label"="Angular Size", "unit"="(kpc/arcsec)", "val"="AngArcSec"),
-                  list("label"="Comoving Volume", "unit"="(Gpc³)", "val"="CoVolGpc3"),
-                  list("label"="Universe Age at z", "unit"="(yr)", "val"="UniAgeAtz")
-    )
-    return(
-      table[[sel]]
-    )
-  }
   
   output$customYValueOut <- renderUI ({
     
@@ -114,15 +111,15 @@ shinyServer(function(input, output) {
     input$submitPlot
     r <- isolate(plotResult())
     x <- input$customYValue
-    xAxis <- lookUpAxis(as.numeric(input$customXAxis))
-    yAxis <- lookUpAxis(as.numeric(input$customYAxis))
+    xAxis <- lookUpTable[[as.numeric(input$customXAxis)]]
+    yAxis <- lookUpTable[[as.numeric(input$customYAxis)]]
     
     # get y value at x
     tempfunc = approxfun(r[[xAxis$val]], r[[yAxis$val]], method="linear")
     y <- tempfunc(x)
     
     # output
-    HTML("<p>is <span style='color:#08c;'>", y, "</span> ", yAxis$unit, "</p>")
+    HTML("<p>y is <span style='color:#08c;'>", y, "</span> ", yAxis$unit, "</p>")
   })
   
   output$customPlotOut <- renderPlot({
@@ -130,8 +127,8 @@ shinyServer(function(input, output) {
     # get inputs
     input$submitPlot
     r <- isolate(plotResult())
-    xAxis <- lookUpAxis(as.numeric(input$customXAxis))
-    yAxis <- lookUpAxis(as.numeric(input$customYAxis))
+    xAxis <- lookUpTable[[as.numeric(input$customXAxis)]]
+    yAxis <- lookUpTable[[as.numeric(input$customYAxis)]]
     useLogX <- input$customLogX
     useLogY <- input$customLogY
     
