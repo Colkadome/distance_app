@@ -1,20 +1,36 @@
+source("table.R")
 shinyUI(fluidPage(
   titlePanel(title="Astronomy Calculator"),
   tabsetPanel(tabPanel("Calculation",
                        sidebarLayout(
                          sidebarPanel(
                            fluidRow(
-                             actionButton(inputId="submitCalc", label="Calculate", icon("random")),
+                             actionButton(inputId="submitCalc", label=span("Calculate"), icon("random")),
                              h4("Set Variables:"),
                              column(6,
-                                    textInput(inputId="calcH0", label="H0", value="70.0"),
+                                    textInput(inputId="calcz", label="z", value="3"),
                                     textInput(inputId="calcOmegaM", label="OmegaM", value="0.3")
                              ),
                              column(5,
-                                    textInput(inputId="calcOmegaL", label="OmegaL", value="1-OmegaM"),
-                                    textInput(inputId="calcz", label="z", value="3")
+                                    textInput(inputId="calcH0", label="H0", value="70.0"),
+                                    textInput(inputId="calcOmegaL", label="OmegaL", value="1-OmegaM")
                              )
-                           )
+                           ),
+                           fluidRow(
+                             h4("Custom Calc:"),
+                             selectInput(inputId="custom_calcAxis", label="Variable", choices = list(
+                                                                                               "a"=2,
+                                                                                               "Comoving Radial Distance LoS"=3,
+                                                                                               "Luminosity Distance"=4,
+                                                                                               "Comoving Radial Distance Tran"=6,
+                                                                                               "DistMod"=7,
+                                                                                               "Comoving Volume"=9,
+                                                                                               "Universe Age at z"=12,
+                                                                                               "Travel Time"=13
+                             ),selected=13),
+                             textInput(inputId="custom_calcValue", label=uiOutput("custom_calcUnit"), value="")
+                             
+                             )
                          ),
                          mainPanel(
                             uiOutput("calcOut")
@@ -27,8 +43,10 @@ shinyUI(fluidPage(
                  fluidRow(
                    actionButton(inputId="submitPlot", label="Plot", icon("random")),
                    h4("Set Variables:"),
+                   textInput(inputId="plotH0", label="H0", value="70.0")
+                 ),
+                 fluidRow(
                    column(6,
-                          textInput(inputId="plotH0", label="H0", value="70.0"),
                           textInput(inputId="plotOmegaM", label="OmegaM", value="0.3")
                    ),
                    column(5,
@@ -47,34 +65,34 @@ shinyUI(fluidPage(
                  ),
                  fluidRow(
                    selectInput("plotAxis", label="x Axis", choices = list("z"=1,
-                                                                          "Travel Time"=12
+                                                                          "Travel Time"=13
                    ),selected=1),
                    checkboxInput("plotLogY", label = "Log y axis", value = FALSE)
                  ),
                  fluidRow(
                    h4("Custom Plot:"),
                    selectInput(inputId="customXAxis", label="x Axis", choices = list("z"=1,
-                                                                                     "Comoving Radial Distance LoS"=2,
-                                                                                     "Luminosity Distance"=3,
-                                                                                     "Angular Size Distance"=4,
-                                                                                     "Comoving Radial Distance Tran"=5,
-                                                                                     "DistMod"=6,
-                                                                                     "Angular Size"=7,
-                                                                                     "Comoving Volume"=8,
-                                                                                     "Universe Age at z"=11,
-                                                                                     "Travel Time"=12
+                                                                                     "a"=2,
+                                                                                     "Comoving Radial Distance LoS"=3,
+                                                                                     "Luminosity Distance"=4,
+                                                                                     "Comoving Radial Distance Tran"=6,
+                                                                                     "DistMod"=7,
+                                                                                     "Comoving Volume"=9,
+                                                                                     "Universe Age at z"=12,
+                                                                                     "Travel Time"=13
                    ),selected=12),
                    checkboxInput("customLogX", label = "Log x axis", value = FALSE),
                    selectInput(inputId="customYAxis", label="y Axis", choices = list("z"=1,
-                                                                                     "Comoving Radial Distance LoS"=2,
-                                                                                     "Luminosity Distance"=3,
-                                                                                     "Angular Size Distance"=4,
-                                                                                     "Comoving Radial Distance Tran"=5,
-                                                                                     "DistMod"=6,
-                                                                                     "Angular Size"=7,
-                                                                                     "Comoving Volume"=8,
-                                                                                     "Universe Age at z"=11,
-                                                                                     "Travel Time"=12
+                                                                                     "a"=2,
+                                                                                     "Comoving Radial Distance LoS"=3,
+                                                                                     "Luminosity Distance"=4,
+                                                                                     "Angular Size Distance"=5,
+                                                                                     "Comoving Radial Distance Tran"=6,
+                                                                                     "DistMod"=7,
+                                                                                     "Angular Size"=8,
+                                                                                     "Comoving Volume"=9,
+                                                                                     "Universe Age at z"=12,
+                                                                                     "Travel Time"=13
                    ),selected=7),
                    checkboxInput("customLogY", label = "Log y axis", value = FALSE)
                  ),
@@ -86,11 +104,62 @@ shinyUI(fluidPage(
                ),
                mainPanel(
                             plotOutput("plotDistOut"),
-                            plotOutput("customPlotOut"),
-                            textInput(inputId="customYValue", label="At an x of:", value="0.5"),
-                            uiOutput("customYValueOut")
+                            plotOutput("customPlotOut")
                 )
             )
+    ),
+    tabPanel("Sky Design",
+             sidebarLayout(
+               sidebarPanel(
+                 fluidRow(
+                   actionButton(inputId="sky_submit", label=span("Calculate"), icon("random")),
+                   h4("Set Variables:")
+                 ),
+                 fluidRow(
+                   column(6,
+                          textInput(inputId="sky_area", label="Area", value="3")
+                   ),
+                   column(5,
+                          selectInput(inputId="sky_areaUnit", label="Unit", choices = list("deg²"="deg2",
+                                                                                           "amin²"="amin2",
+                                                                                           "asec²"="asec2",
+                                                                                           "sr"="sr"
+                          ),selected="deg2")
+                   )
+                 ),
+                 fluidRow(
+                   textInput(inputId="sky_H0", label="H0", value="70.0")
+                   ),
+                 fluidRow(
+                   column(6,
+                          textInput(inputId="sky_OmegaM", label="OmegaM", value="0.3"),
+                          textInput(inputId="sky_minz", label="min z", value="10")
+                   ),
+                   column(5,
+                          textInput(inputId="sky_OmegaL", label="OmegaL", value="1-OmegaM"),
+                          textInput(inputId="sky_maxz", label="max z", value="0")
+                   )
+                 ),
+                 fluidRow(
+                   h4("Find Area (optional):"),
+                   actionButton(inputId="sky_setArea", icon("arrow-up")),
+                   br(), br()
+                 ),
+                 fluidRow(
+                   column(6,
+                          textInput(inputId="sky_long1", label="Longitude 1 (deg)", value="129"),
+                          textInput(inputId="sky_lat1", label="Latitude 1 (deg)", value="-2")
+                   ),
+                   column(5,
+                          textInput(inputId="sky_long2", label="Longitude 2 (deg)", value="141"),
+                          textInput(inputId="sky_lat2", label="Latitude 2 (deg)", value="3")
+                   )
+                 )
+               ),
+               mainPanel(
+                 uiOutput("sky_out")
+               ) 
+             )
     ),
     tabPanel("Info",
              h3("About"),
@@ -133,8 +202,7 @@ shinyUI(fluidPage(
              p("Basic cosmological calculator R code used server-side to generate outputs."),
              p("Written by Aaron Robotham (see", span("Info", style='color:#08c'), "tab for references)."),
              div(
-             p("
-cosdist=function(z=0,H0=100,OmegaM=0.3,OmegaL=1-OmegaM,age=FALSE){
+             div("cosdist=function(z=0,H0=100,OmegaM=0.3,OmegaL=1-OmegaM,age=FALSE){
   OmegaK=1-OmegaM-OmegaL
   temp = function(z, H0, OmegaM, OmegaL, OmegaK) {
     Einv = function(z, OmegaM, OmegaL, OmegaK) {1/sqrt(OmegaM * (1 + z)^3 + OmegaK * (1 + z)^2 + OmegaL)}
@@ -167,7 +235,7 @@ cosdist=function(z=0,H0=100,OmegaM=0.3,OmegaL=1-OmegaM,age=FALSE){
     }
   }
   return = as.data.frame(t(Vectorize(temp)(z = z, H0 = H0, OmegaM = OmegaM, OmegaL = OmegaL, OmegaK = OmegaK)))
-}", style="white-space: pre-wrap; color:blue;"), style="background-color:whitesmoke")
+}", style="white-space:pre-wrap;color:blue;"), style="background-color:whitesmoke;padding:5px;")
              )
   )
 ))

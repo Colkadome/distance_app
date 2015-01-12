@@ -1,26 +1,18 @@
-source("cosdist.R")
+library("celestial")
 library("magicaxis")
+source("table.R")
 
-lookUpTable <- list(list("label"="z", "unit"="", "val"="z"),
-                    list("label"="Comoving Radial Distance LoS", "unit"="(Mpc)", "val"="CoDistLoS"),
-                    list("label"="Luminosity Distance", "unit"="(Mpc)", "val"="LumDist"),
-                    list("label"="Angular Size Distance", "unit"="(Mpc)", "val"="AngDist"),
-                    list("label"="Comoving Radial Distance Tran", "unit"="(Mpc)", "val"="CoDistTran"),
-                    list("label"="DistMod", "unit"="(mag)", "val"="DistMod"),
-                    list("label"="Angular Size", "unit"="(kpc/arcsec)", "val"="AngArcSec"),
-                    list("label"="Comoving Volume", "unit"="(Gpc³)", "val"="CoVolGpc3"),
-                    list("label"="Hubble Time", "unit"="(yr)", "val"="HubTime"),
-                    list("label"="Universe Age Now", "unit"="(yr)", "val"="UniAgeNow"),
-                    list("label"="Universe Age at z", "unit"="(yr)", "val"="UniAgeAtz"),
-                    list("label"="Travel Time", "unit"="(yr)", "val"="TravelTime")
-)
-
-shinyServer(function(input, output) {
+shinyServer(function(input, output, clientData, session) {
   
   output$calcOut <- renderUI ({
     
     # reactive output
     input$submitCalc
+    
+    # HOW TO CHANGE INPUT DATA
+    #updateTextInput(session, "custom_calcValue",
+    #                value = paste("New text")
+    #)
     
     # get variables
     z <- isolate(as.numeric(input$calcz))
@@ -33,18 +25,51 @@ shinyServer(function(input, output) {
       OmegaL <- as.numeric(isolate(input$calcOmegaL))
     }
     
+    # custom variables
+    useCustom <- FALSE
+    if(nchar(isolate(input$custom_calcValue)) > 0) {
+      useCustom <- TRUE
+      axis <- lookUpTable[[as.numeric(isolate(input$custom_calcAxis))]]
+      axisValue <- as.numeric(isolate(input$custom_calcValue))
+    }
+    
     # get results
-    r <- cosdist(z, H0, OmegaM, OmegaL, TRUE)
+    if(useCustom) {
+      r <- cosmapval(axisValue, axis$val, H0, OmegaM, OmegaL, res=12, iter=12, age=TRUE)
+      updateTextInput(session, "calcz", value = r$z)
+    }
+    else {
+      r <- cosdist(z, H0, OmegaM, OmegaL, age=TRUE)
+    }
     
     # build output
-    l <- paste0("<h4>For z = ", z, ":</h4>")
+    if(useCustom) {
+      l <- paste0("<h4>For ", axis$label," = ", r[[axis$val]], " (±", as.numeric(r$error)*100, "%) ", axis$unit, ":</h4>")
+    }
+    else {
+      l <- paste0("<h4>For z = ", z, " :</h4>")
+    }
     for(t in lookUpTable) {
-      if(t$label != "z")
-        l <- append(l, paste0("<p>The <b>",t$label,"</b> is <span style='color:#08c;'>", r[[t$val]], "</span> ", t$unit, "</p>"))
+      l <- append(l, paste0("<p>The <b>",t$label,"</b> is <span style='color:#08c;'>", r[[t$val]], "</span> ", t$unit, "</p>"))
     }
     
     # the output
     HTML(l)
+  })
+  
+  output$custom_calcUnit <- renderUI({
+    
+    # append unit to text
+    var <- lookUpTable[[as.numeric(input$custom_calcAxis)]]
+    str <- paste("Value", var$unit)
+    
+    # if the input box has something, make text green
+    if(nchar(input$custom_calcValue) > 0) {
+      HTML("<span style='color:green;'>", str, "</span>")
+    }
+    else {
+      HTML("<span>", str, "</span>")
+    }
   })
   
   plotResult <- reactive({
@@ -56,7 +81,7 @@ shinyServer(function(input, output) {
       OmegaL <- 1 - OmegaM
     }
     else {
-      OmegaL <- as.numeric(input$plotOmegaL)
+      OmegaL <- as.numeric(isolate(input$plotOmegaL))
     }
     
     # get graph settings
@@ -107,23 +132,6 @@ shinyServer(function(input, output) {
     legend("topleft",bty='n',legend=c('Co Dist (LoS)','Co Dist (tran)','Lum Dist','Ang Dist'),col=c('black','black','red','blue'),lty=c(1,2,1,1))
   })
   
-  output$customYValueOut <- renderUI ({
-    
-    # get inputs
-    input$submitPlot
-    r <- isolate(plotResult())
-    x <- input$customYValue
-    xAxis <- lookUpTable[[as.numeric(input$customXAxis)]]
-    yAxis <- lookUpTable[[as.numeric(input$customYAxis)]]
-    
-    # get y value at x
-    tempfunc = approxfun(r[[xAxis$val]], r[[yAxis$val]], method="linear")
-    y <- tempfunc(x)
-    
-    # output
-    HTML("<p>y is <span style='color:#08c;'>", y, "</span> ", yAxis$unit, "</p>")
-  })
-  
   output$customPlotOut <- renderPlot({
     
     # get inputs
@@ -147,6 +155,64 @@ shinyServer(function(input, output) {
     magplot(x=r[[xAxis$val]], y=r[[yAxis$val]], main=paste0(yAxis$label, " vs ", xAxis$label),
             xlab=paste(xAxis$label, xAxis$unit), ylab=paste(yAxis$label, yAxis$unit),type="l",
             col='black',log=log)
+  })
+  
+  observe ({
+    
+    # reactive input
+    if(input$sky_setArea > 0) {
+      
+      # get variables
+      long1 <- as.numeric(isolate(input$sky_long1))
+      long2 <- as.numeric(isolate(input$sky_long2))
+      lat1 <- as.numeric(isolate(input$sky_lat1))
+      lat2 <- as.numeric(isolate(input$sky_lat2))
+      
+      # stop weird bug
+      if(long1 > long2) {
+        temp <- long1
+        long1 <- long2
+        long2 <- temp
+      }
+      if(lat1 > lat2) {
+        temp <- lat1
+        lat1 <- lat2
+        lat2 <- temp
+      }
+      
+      # get result
+      a <- skyarea(long = c(long1,long2), lat = c(lat1,lat2), inunit = "deg", outunit = "deg2")
+      
+      # update area inputs with result
+      updateTextInput(session, "sky_area", value = as.numeric(a[1]))
+      updateSelectInput(session, "sky_areaUnit", selected = "deg2")
+    }
+  })
+  
+  output$sky_out <- renderUI ({
+    
+    # make reactive
+    input$sky_submit
+    
+    # get variables
+    area <- as.numeric(isolate(input$sky_area))
+    H0 <- as.numeric(isolate(input$sky_H0))
+    OmegaM <- as.numeric(isolate(input$sky_OmegaM))
+    if(gsub(" ", "", tolower(isolate(input$sky_OmegaL)), fixed = TRUE)=="1-omegam") {
+      OmegaL <- 1 - OmegaM
+    }
+    else {
+      OmegaL <- as.numeric(isolate(input$sky_OmegaL))
+    }
+    unit <- isolate(input$sky_areaUnit)
+    minz <- as.numeric(isolate(input$sky_minz))
+    maxz <- as.numeric(isolate(input$sky_maxz))
+    
+    # get result
+    s <- cosvol(area, minz, maxz, H0, OmegaM, OmegaL, unit)
+    
+    # generate output
+    HTML("<p>The <b>Comoving Volume</b> is <span style='color:#08c;'>", s, "</span> (Gpc³)</p>")
   })
   
 })
