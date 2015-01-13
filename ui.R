@@ -1,164 +1,170 @@
 source("table.R")
 shinyUI(fluidPage(
-  titlePanel(title="Astronomy Calculator"),
-  tabsetPanel(tabPanel("Calculation",
-                       sidebarLayout(
-                         sidebarPanel(
-                           fluidRow(
-                             actionButton(inputId="submitCalc", label=span("Calculate"), icon("random")),
-                             h4("Set Variables:"),
-                             column(6,
-                                    textInput(inputId="calcz", label="z", value="3"),
-                                    textInput(inputId="calcOmegaM", label="OmegaM", value="0.3")
+    
+    tags$head(
+        tags$script(src = "google-code-prettify/run_prettify.js")
+    ),
+    
+    titlePanel(title="Astronomy Calculator"),
+    tabsetPanel(tabPanel("Calculation",
+                         sidebarLayout(
+                             sidebarPanel(
+                                 fluidRow(
+                                     actionButton(inputId="submitCalc", label=span("Calculate"), icon("random")),
+                                     h4("Set Variables:"),
+                                     column(6,
+                                            textInput(inputId="calcz", label="z", value="1"),
+                                            textInput(inputId="calcOmegaM", label="OmegaM", value="0.3")
+                                     ),
+                                     column(5,
+                                            textInput(inputId="calcH0", label="H0", value="70.0"),
+                                            textInput(inputId="calcOmegaL", label="OmegaL", value="1-OmegaM")
+                                     )
+                                 ),
+                                 fluidRow(
+                                     h4("Custom Calc:"),
+                                     selectInput(inputId="custom_calcAxis", label="Variable", choices = list(
+                                         "a"=2,
+                                         "Comoving Radial Distance LoS"=3,
+                                         "Luminosity Distance"=4,
+                                         "Comoving Radial Distance Tran"=6,
+                                         "DistMod"=7,
+                                         "Comoving Volume"=9,
+                                         "Universe Age at z"=12,
+                                         "Travel Time"=13
+                                     ),selected=13),
+                                     textInput(inputId="custom_calcValue", label=uiOutput("custom_calcUnit"), value="")
+                                     
+                                 )
                              ),
-                             column(5,
-                                    textInput(inputId="calcH0", label="H0", value="70.0"),
-                                    textInput(inputId="calcOmegaL", label="OmegaL", value="1-OmegaM")
-                             )
-                           ),
-                           fluidRow(
-                             h4("Custom Calc:"),
-                             selectInput(inputId="custom_calcAxis", label="Variable", choices = list(
-                                                                                               "a"=2,
-                                                                                               "Comoving Radial Distance LoS"=3,
-                                                                                               "Luminosity Distance"=4,
-                                                                                               "Comoving Radial Distance Tran"=6,
-                                                                                               "DistMod"=7,
-                                                                                               "Comoving Volume"=9,
-                                                                                               "Universe Age at z"=12,
-                                                                                               "Travel Time"=13
-                             ),selected=13),
-                             textInput(inputId="custom_calcValue", label=uiOutput("custom_calcUnit"), value="")
-                             
-                             )
-                         ),
-                         mainPanel(
-                            uiOutput("calcOut")
-                         ) 
-                       )
+                             mainPanel(
+                                 uiOutput("calcOut")
+                             ) 
+                         )
     ),
     tabPanel("Plot",
              sidebarLayout(
-               sidebarPanel(
-                 fluidRow(
-                   actionButton(inputId="submitPlot", label="Plot", icon("random")),
-                   h4("Set Variables:"),
-                   textInput(inputId="plotH0", label="H0", value="70.0")
+                 sidebarPanel(
+                     fluidRow(
+                         actionButton(inputId="submitPlot", label="Plot", icon("random")),
+                         h4("Set Variables:"),
+                         textInput(inputId="plotH0", label="H0", value="70.0")
+                     ),
+                     fluidRow(
+                         column(6,
+                                textInput(inputId="plotOmegaM", label="OmegaM", value="0.3")
+                         ),
+                         column(5,
+                                textInput(inputId="plotOmegaL", label="OmegaL", value="1-OmegaM")
+                         )
+                     ),
+                     fluidRow(
+                         h4("Plot Options:"),
+                         column(6,
+                                textInput(inputId="plotStart", label="z Start", value="0"),
+                                textInput(inputId="plotRes", label="z Resolution", value="1000")
+                         ),
+                         column(5,
+                                textInput(inputId="plotEnd", label="z End", value="1")
+                         )
+                     ),
+                     fluidRow(
+                         selectInput("plotAxis", label="x Axis", choices = list("z"=1,
+                                                                                "Travel Time"=13
+                         ),selected=1),
+                         checkboxInput("plotLogY", label = "Log y axis", value = FALSE)
+                     ),
+                     fluidRow(
+                         h4("Custom Plot:"),
+                         selectInput(inputId="customXAxis", label="x Axis", choices = list("z"=1,
+                                                                                           "a"=2,
+                                                                                           "Comoving Radial Distance LoS"=3,
+                                                                                           "Luminosity Distance"=4,
+                                                                                           "Comoving Radial Distance Tran"=6,
+                                                                                           "DistMod"=7,
+                                                                                           "Comoving Volume"=9,
+                                                                                           "Universe Age at z"=12,
+                                                                                           "Travel Time"=13
+                         ),selected=12),
+                         checkboxInput("customLogX", label = "Log x axis", value = FALSE),
+                         selectInput(inputId="customYAxis", label="y Axis", choices = list("z"=1,
+                                                                                           "a"=2,
+                                                                                           "Comoving Radial Distance LoS"=3,
+                                                                                           "Luminosity Distance"=4,
+                                                                                           "Angular Size Distance"=5,
+                                                                                           "Comoving Radial Distance Tran"=6,
+                                                                                           "DistMod"=7,
+                                                                                           "Angular Size"=8,
+                                                                                           "Comoving Volume"=9,
+                                                                                           "Universe Age at z"=12,
+                                                                                           "Travel Time"=13
+                         ),selected=7),
+                         checkboxInput("customLogY", label = "Log y axis", value = FALSE)
+                     ),
+                     fluidRow(
+                         h4("Save Data:"),
+                         downloadButton("saveData_txt",label="Download as .txt"),
+                         downloadButton("saveData_csv",label="Download as .csv")
+                     )
                  ),
-                 fluidRow(
-                   column(6,
-                          textInput(inputId="plotOmegaM", label="OmegaM", value="0.3")
-                   ),
-                   column(5,
-                          textInput(inputId="plotOmegaL", label="OmegaL", value="1-OmegaM")
-                   )
-                 ),
-                 fluidRow(
-                   h4("Plot Options:"),
-                   column(6,
-                          textInput(inputId="plotStart", label="z Start", value="0"),
-                          textInput(inputId="plotRes", label="z Resolution", value="1000")
-                   ),
-                   column(5,
-                          textInput(inputId="plotEnd", label="z End", value="1")
-                   )
-                 ),
-                 fluidRow(
-                   selectInput("plotAxis", label="x Axis", choices = list("z"=1,
-                                                                          "Travel Time"=13
-                   ),selected=1),
-                   checkboxInput("plotLogY", label = "Log y axis", value = FALSE)
-                 ),
-                 fluidRow(
-                   h4("Custom Plot:"),
-                   selectInput(inputId="customXAxis", label="x Axis", choices = list("z"=1,
-                                                                                     "a"=2,
-                                                                                     "Comoving Radial Distance LoS"=3,
-                                                                                     "Luminosity Distance"=4,
-                                                                                     "Comoving Radial Distance Tran"=6,
-                                                                                     "DistMod"=7,
-                                                                                     "Comoving Volume"=9,
-                                                                                     "Universe Age at z"=12,
-                                                                                     "Travel Time"=13
-                   ),selected=12),
-                   checkboxInput("customLogX", label = "Log x axis", value = FALSE),
-                   selectInput(inputId="customYAxis", label="y Axis", choices = list("z"=1,
-                                                                                     "a"=2,
-                                                                                     "Comoving Radial Distance LoS"=3,
-                                                                                     "Luminosity Distance"=4,
-                                                                                     "Angular Size Distance"=5,
-                                                                                     "Comoving Radial Distance Tran"=6,
-                                                                                     "DistMod"=7,
-                                                                                     "Angular Size"=8,
-                                                                                     "Comoving Volume"=9,
-                                                                                     "Universe Age at z"=12,
-                                                                                     "Travel Time"=13
-                   ),selected=7),
-                   checkboxInput("customLogY", label = "Log y axis", value = FALSE)
-                 ),
-                 fluidRow(
-                   h4("Save Data:"),
-                   downloadButton("saveData_txt",label="Download as .txt"),
-                   downloadButton("saveData_csv",label="Download as .csv")
+                 mainPanel(
+                     plotOutput("plotDistOut"),
+                     plotOutput("customPlotOut")
                  )
-               ),
-               mainPanel(
-                            plotOutput("plotDistOut"),
-                            plotOutput("customPlotOut")
-                )
-            )
+             )
     ),
-    tabPanel("Sky Design",
+    tabPanel("Survey Design",
              sidebarLayout(
-               sidebarPanel(
-                 fluidRow(
-                   actionButton(inputId="sky_submit", label=span("Calculate"), icon("random")),
-                   h4("Set Variables:")
+                 sidebarPanel(
+                     fluidRow(
+                         actionButton(inputId="sky_submit", label=span("Calculate"), icon("random")),
+                         h4("Set Variables:")
+                     ),
+                     fluidRow(
+                         column(6,
+                                textInput(inputId="sky_area", label="Area", value="59.97867933223287")
+                         ),
+                         column(5,
+                                selectInput(inputId="sky_areaUnit", label="Unit", choices = list("deg²"="deg2",
+                                                                                                 "amin²"="amin2",
+                                                                                                 "asec²"="asec2",
+                                                                                                 "sr"="sr"
+                                ),selected="deg2")
+                         )
+                     ),
+                     fluidRow(
+                         textInput(inputId="sky_H0", label="H0", value="70.0")
+                     ),
+                     fluidRow(
+                         column(6,
+                                textInput(inputId="sky_OmegaM", label="OmegaM", value="0.3"),
+                                textInput(inputId="sky_minz", label="min z", value="0")
+                         ),
+                         column(5,
+                                textInput(inputId="sky_OmegaL", label="OmegaL", value="1-OmegaM"),
+                                textInput(inputId="sky_maxz", label="max z", value="0.5")
+                         )
+                     ),
+                     fluidRow(
+                         h4("Find Area (optional):"),
+                         actionButton(inputId="sky_setArea", icon("arrow-up")),
+                         br(), br()
+                     ),
+                     fluidRow(
+                         column(6,
+                                textInput(inputId="sky_long1", label="Longitude 1 (deg)", value="129"),
+                                textInput(inputId="sky_lat1", label="Latitude 1 (deg)", value="-2")
+                         ),
+                         column(5,
+                                textInput(inputId="sky_long2", label="Longitude 2 (deg)", value="141"),
+                                textInput(inputId="sky_lat2", label="Latitude 2 (deg)", value="3")
+                         )
+                     )
                  ),
-                 fluidRow(
-                   column(6,
-                          textInput(inputId="sky_area", label="Area", value="3")
-                   ),
-                   column(5,
-                          selectInput(inputId="sky_areaUnit", label="Unit", choices = list("deg²"="deg2",
-                                                                                           "amin²"="amin2",
-                                                                                           "asec²"="asec2",
-                                                                                           "sr"="sr"
-                          ),selected="deg2")
-                   )
-                 ),
-                 fluidRow(
-                   textInput(inputId="sky_H0", label="H0", value="70.0")
-                   ),
-                 fluidRow(
-                   column(6,
-                          textInput(inputId="sky_OmegaM", label="OmegaM", value="0.3"),
-                          textInput(inputId="sky_minz", label="min z", value="10")
-                   ),
-                   column(5,
-                          textInput(inputId="sky_OmegaL", label="OmegaL", value="1-OmegaM"),
-                          textInput(inputId="sky_maxz", label="max z", value="0")
-                   )
-                 ),
-                 fluidRow(
-                   h4("Find Area (optional):"),
-                   actionButton(inputId="sky_setArea", icon("arrow-up")),
-                   br(), br()
-                 ),
-                 fluidRow(
-                   column(6,
-                          textInput(inputId="sky_long1", label="Longitude 1 (deg)", value="129"),
-                          textInput(inputId="sky_lat1", label="Latitude 1 (deg)", value="-2")
-                   ),
-                   column(5,
-                          textInput(inputId="sky_long2", label="Longitude 2 (deg)", value="141"),
-                          textInput(inputId="sky_lat2", label="Latitude 2 (deg)", value="3")
-                   )
-                 )
-               ),
-               mainPanel(
-                 uiOutput("sky_out")
-               ) 
+                 mainPanel(
+                     h4("Result:"),
+                     uiOutput("sky_out")
+                 ) 
              )
     ),
     tabPanel("Info",
@@ -169,73 +175,120 @@ shinyUI(fluidPage(
              br(),
              h4("Calculation", style='color:#08c'),
              p(
-               "In this tab, fill in the variables under", strong("Set Variables"), "and click the", actionButton(inputId="dud", label="Calculate", icon("random")),
-               "button to calculate variables at a certain redshift. Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
-               "for all calculations."
+                 "This tab is used to calculate various distance parameters."
+             ),
+             p(
+                 "To use this tab, fill in the variables under", strong("Set Variables"), "and click the", actionButton(inputId="dud", label="Calculate", icon("random")),
+                 "button to calculate variables at a certain redshift. Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
+                 "for all calculations."
+             ),
+             p(
+                 "Under", strong("Custom Calc,"), "the calculation may be done using a chosen variable from the", span("Variable", style="text-decoration:underline;"), "menu.",
+                 "When the", span("Value", style="text-decoration:underline;"), "box contains a value, the custom calculation will be used next time the", actionButton(inputId="dud", label="Calculate", icon("random")),
+                 "button is clicked."
              ),
              br(),
              h4("Plot", style='color:#08c'),
              p(
-               "In this tab, fill in the attributes under", strong("Set Variables"), "and", strong("Plot Options"), ", and click",
-               actionButton(inputId="dud", label="Plot", icon("random")), " to produce plots across a redshift range.",
-               "Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
-               "for all calculations. Some of the plot options are as follows:"
+                 "This tab is used to plot various parameters."
              ),
-             p(strong("z Start"), "- The minimum redshift for the plots."),
-             p(strong("z End"), "- The maximum redshift for the plots."),
+             p(
+                 "To use this tab, fill in the variables under", strong("Set Variables"), "and", strong("Plot Options,"), "and click",
+                 actionButton(inputId="dud", label="Plot", icon("random")), " to produce plots across a redshift range.",
+                 "The first plot is a distance plot, and the second plot is a custom plot which may be modified using the options under", strong("Custom Plot."),
+                 "Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
+                 "for all calculations. Some of the plot options are as follows:"
+             ),
+             p(strong("z Start"), "- The starting redshift for the plots."),
+             p(strong("z End"), "- The finishing redshift for the plots."),
              p(strong("z Resolution"), "- The number of points to plot between", strong("z Start"), "and", strong("z End.")),
              p(
-               "The resulting data can be saved using the options under", strong("Save Data."),
-               "The second plot is a custom plot, and can be modified using the options under", strong("Custom Plot."),
-               "Through linear interpolation between points, the y value at any point along the custom graph may be found.",
-               "To do this, input an x value into the box below the custom graph.",
-               "The input may be in the form '2e3', etc."
-               ),
+                 "The resulting data can be saved using the options under", strong("Save Data.")
+             ),
              br(),
-             h4("Acknowledgements"),
+             h4("Survey Design", style='color:#08c'),
+             p(
+                 "This tab is used to find the Comoving Volume of an area in the sky."
+             ),
+             p(
+                 "To use this tab, fill in the variables under", strong("Set Variables"), "and click the", actionButton(inputId="dud", label="Calculate", icon("random")),
+                 "button to calculate the Comoving Volume. If the area is unknown, an extra option under", strong("Find Area (optional)"), "can be used the find the area of the sky given the latitude and longitude.",
+                 "The Area field is then updated by clicking the", actionButton(inputId="dud", icon("arrow-up")), "button."
+             ),
+             br(),
+             h4("References"),
              p(a("D. W. Hogg et all 1999 (arXiv 9905116)", href="http://arxiv.org/abs/astro-ph/9905116", target="_blank")),
              p(a("Wright E.L., 2006, PASP, 118, 1711", href="http://arxiv.org/abs/astro-ph/0609593", target="_blank")),
              br(),
-             div("Written by Joseph Dunne (2015)", style="font-size:10px; color:grey;", align="center")
+             div("Written by Aaron Robotham, Joseph Dunne (2015)", style="font-size:10px; color:grey;", align="center")
     ),
     tabPanel("R Code",
              p("Basic cosmological calculator R code used server-side to generate outputs."),
              p("Written by Aaron Robotham (see", span("Info", style='color:#08c'), "tab for references)."),
-             div(
-             div("cosdist=function(z=0,H0=100,OmegaM=0.3,OmegaL=1-OmegaM,age=FALSE){
-  OmegaK=1-OmegaM-OmegaL
-  temp = function(z, H0, OmegaM, OmegaL, OmegaK) {
-    Einv = function(z, OmegaM, OmegaL, OmegaK) {1/sqrt(OmegaM * (1 + z)^3 + OmegaK * (1 + z)^2 + OmegaL)}
-    HubDist = (299792.458/H0)
-    CoDistLoS = HubDist * integrate(Einv, 0, z, OmegaM = OmegaM, OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000)$value
-
-    if(OmegaK>0){CoDistTran = HubDist*(1/sqrt(OmegaK))*sinh(sqrt(OmegaK)*CoDistLoS/HubDist)}
-    if(OmegaK==0){CoDistTran = CoDistLoS}
-    if(OmegaK<0){CoDistTran = HubDist*(1/sqrt(abs(OmegaK)))*sin(sqrt(abs(OmegaK))*CoDistLoS/HubDist)}
-
-    AngDist = CoDistTran/(1 + z)
-    LumDist = (1+z) * CoDistTran
-    DistMod = 5 * log10(LumDist) + 25
-    AngArcSec = AngDist * (pi/(180 * 60 * 60)) * 1000
-
-    if(OmegaK>0){CoVol = (4*pi*HubDist^3/(2*OmegaK))*((CoDistTran/HubDist)*sqrt(1+OmegaK*(CoDistTran/HubDist)^2)-(1/sqrt(abs(OmegaK)))*asinh(sqrt(abs(OmegaK))*(CoDistTran/HubDist)))}
-    if(OmegaK==0){CoVol = (4/3) * pi * CoDistLoS^3}
-    if(OmegaK<0){CoVol = (4*pi*HubDist^3/(2*OmegaK))*((CoDistTran/HubDist)*sqrt(1+OmegaK*(CoDistTran/HubDist)^2)-(1/sqrt(abs(OmegaK)))*asin(sqrt(abs(OmegaK))*(CoDistTran/HubDist)))}
-
-    if(age){
-      Einvz = function(z, OmegaM, OmegaL, OmegaK){1/(sqrt(OmegaM * (1 + z)^3 + OmegaK * (1 + z)^2 + OmegaL) * (1 + z))}
-      HT = 3.08568025e+19/(H0 * 31556926)
-      UniAge = HT * integrate(Einvz, 0, Inf, OmegaM = OmegaM, OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000)$value
-      zAge = HT * integrate(Einvz, 0, z, OmegaM = OmegaM, OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000)$value
+             HTML("<pre class='prettyprint lang-r' style='padding:5px'>function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM, age = FALSE) {
+    OmegaK = 1 - OmegaM - OmegaL
+    Einv = function(z, OmegaM, OmegaL, OmegaK) {
+        1/sqrt(OmegaM * (1 + z)^3 + OmegaK * (1 + z)^2 + OmegaL)
     }
-    if(age){
-      return = c(z = z, CoDistLoS = CoDistLoS, LumDist = LumDist, AngDist = AngDist, CoDistTran=CoDistTran, DistMod = DistMod, AngArcSec = AngArcSec, CoVolGpc3 = CoVol/1e+09, HubTime = HT, UniAgeNow = UniAge, UniAgeAtz = UniAge - zAge, TravelTime = zAge)
-    }else{
-      return = c(z = z, CoDistLoS = CoDistLoS, LumDist = LumDist, AngDist = AngDist, CoDistTran=CoDistTran, DistMod = DistMod, AngArcSec = AngArcSec, CoVolGpc3 = CoVol/1e+09)
+    if (age) {
+        Einvz = function(z, OmegaM, OmegaL, OmegaK) {
+            1/(sqrt(OmegaM * (1 + z)^3 + OmegaK * (1 + z)^2 + OmegaL) * (1 + z))
+        }
     }
-  }
-  return = as.data.frame(t(Vectorize(temp)(z = z, H0 = H0, OmegaM = OmegaM, OmegaL = OmegaL, OmegaK = OmegaK)))
-}", style="white-space:pre-wrap;color:blue;"), style="background-color:whitesmoke;padding:5px;")
+    temp = function(z, H0, OmegaM, OmegaL, OmegaK) {
+        HubDist = (299792.458/H0)
+        CoDist = HubDist * integrate(Einv, 0, z, OmegaM = OmegaM,
+            OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000)$value
+        if (OmegaK == 0) {
+            CoDistTran = CoDist
+            CoVol = ((4/3) * pi * CoDist^3)/1e+09
+        }
+        else {
+            if (OmegaK > 0) {
+                CoDistTran = HubDist * (1/sqrt(OmegaK)) *
+                    sinh(sqrt(OmegaK) * CoDist/HubDist)
+                CoVol = ((4 * pi * HubDist^3/(2 * OmegaK)) *
+                    ((CoDistTran/HubDist) * sqrt(1 + OmegaK * (CoDistTran/HubDist)^2) -
+                    (1/sqrt(abs(OmegaK))) * asinh(sqrt(abs(OmegaK)) *
+                    (CoDistTran/HubDist))))/1e+09
+            }
+            if (OmegaK < 0) {
+                CoDistTran = HubDist * (1/sqrt(abs(OmegaK))) *
+                    sin(sqrt(abs(OmegaK)) * CoDist/HubDist)
+                CoVol = ((4 * pi * HubDist^3/(2 * OmegaK)) *
+                    ((CoDistTran/HubDist) * sqrt(1 + OmegaK * (CoDistTran/HubDist)^2) -
+                    (1/sqrt(abs(OmegaK))) * asin(sqrt(abs(OmegaK)) *
+                    (CoDistTran/HubDist))))/1e+09
+            }
+        }
+        a = 1/(1 + z)
+        LumDist = (1 + z) * CoDistTran
+        AngDist = CoDistTran/(1 + z)
+        DistMod = 5 * log10(LumDist) + 25
+        AngSize = AngDist * (pi/(180 * 60 * 60)) * 1000
+        if (age) {
+            HT = (3.08568025e+19/(H0 * 31556926))/1e+09
+            UniAge = HT * integrate(Einvz, 0, Inf, OmegaM = OmegaM,
+                OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000)$value
+            zAge = HT * integrate(Einvz, 0, z, OmegaM = OmegaM,
+                OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000)$value
+        }
+        if (age) {
+            return = c(z = z, a = a, CoDist = CoDist, LumDist = LumDist,
+                AngDist = AngDist, CoDistTran = CoDistTran, DistMod = DistMod,
+                AngSize = AngSize, CoVol = CoVol, HubTime = HT,
+                UniAgeNow = UniAge, UniAgeAtz = UniAge - zAge,
+                TravelTime = zAge)
+        }
+        else {
+            return = c(z = z, a = a, CoDist = CoDist, LumDist = LumDist,
+                AngDist = AngDist, CoDistTran = CoDistTran, DistMod = DistMod,
+                AngSize = AngSize, CoVol = CoVol)
+        }
+    }
+    return(as.data.frame(t(Vectorize(temp)(z = z, H0 = H0, OmegaM = OmegaM, OmegaL = OmegaL, OmegaK = OmegaK))))
+}</pre>"
              )
-  )
+    )
+    )
 ))
