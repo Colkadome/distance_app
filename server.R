@@ -1,5 +1,5 @@
-library("celestial")
-library("magicaxis")
+require("celestial")
+require("magicaxis")
 source("table.R")
 
 shinyServer(function(input, output, clientData, session) {
@@ -77,11 +77,11 @@ shinyServer(function(input, output, clientData, session) {
         # get variables
         H0 <- as.numeric(input$plotH0)
         OmegaM <- as.numeric(input$plotOmegaM)
-        if(gsub(" ", "", tolower(isolate(input$plotOmegaL)), fixed = TRUE)=="1-omegam") {
+        if(gsub(" ", "", tolower(input$plotOmegaL), fixed = TRUE)=="1-omegam") {
             OmegaL <- 1 - OmegaM
         }
         else {
-            OmegaL <- as.numeric(isolate(input$plotOmegaL))
+            OmegaL <- as.numeric(input$plotOmegaL)
         }
         
         # get graph settings

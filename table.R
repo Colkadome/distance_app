@@ -10,5 +10,5 @@ lookUpTable <- list(list("label"="z", "unit"="", "val"="z"),
                     list("label"="Hubble Time", "unit"="(Gyr)", "val"="HubTime"),
                     list("label"="Universe Age Now", "unit"="(Gyr)", "val"="UniAgeNow"),
                     list("label"="Universe Age at z", "unit"="(Gyr)", "val"="UniAgeAtz"),
-                    list("label"="Travel Time", "unit"="(Gyr)", "val"="TravelTime")
+                    list("label"="Media Distance", "unit"="(Gyr)", "val"="TravelTime")
 )

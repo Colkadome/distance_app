@@ -31,7 +31,7 @@ shinyUI(fluidPage(
                                          "DistMod"=7,
                                          "Comoving Volume"=9,
                                          "Universe Age at z"=12,
-                                         "Travel Time"=13
+                                         "Media Distance"=13
                                      ),selected=13),
                                      textInput(inputId="custom_calcValue", label=uiOutput("custom_calcUnit"), value="")
                                      
@@ -70,7 +70,7 @@ shinyUI(fluidPage(
                      ),
                      fluidRow(
                          selectInput("plotAxis", label="x Axis", choices = list("z"=1,
-                                                                                "Travel Time"=13
+                                                                                "Media Distance"=13
                          ),selected=1),
                          checkboxInput("plotLogY", label = "Log y axis", value = FALSE)
                      ),
@@ -84,7 +84,7 @@ shinyUI(fluidPage(
                                                                                            "DistMod"=7,
                                                                                            "Comoving Volume"=9,
                                                                                            "Universe Age at z"=12,
-                                                                                           "Travel Time"=13
+                                                                                           "Media Distance"=13
                          ),selected=12),
                          checkboxInput("customLogX", label = "Log x axis", value = FALSE),
                          selectInput(inputId="customYAxis", label="y Axis", choices = list("z"=1,
@@ -97,7 +97,7 @@ shinyUI(fluidPage(
                                                                                            "Angular Size"=8,
                                                                                            "Comoving Volume"=9,
                                                                                            "Universe Age at z"=12,
-                                                                                           "Travel Time"=13
+                                                                                           "Media Distance"=13
                          ),selected=7),
                          checkboxInput("customLogY", label = "Log y axis", value = FALSE)
                      ),
