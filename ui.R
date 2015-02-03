@@ -5,7 +5,7 @@ shinyUI(fluidPage(
         tags$script(src = "google-code-prettify/run_prettify.js")
     ),
     
-    titlePanel(title="Astronomy Calculator"),
+    titlePanel(title="Cosmology Calculator"),
     tabsetPanel(tabPanel("Calculation",
                          sidebarLayout(
                              sidebarPanel(
@@ -24,14 +24,14 @@ shinyUI(fluidPage(
                                  fluidRow(
                                      h4("Custom Calc:"),
                                      selectInput(inputId="custom_calcAxis", label="Variable", choices = list(
-                                         "a"=2,
-                                         "Comoving Radial Distance LoS"=3,
-                                         "Luminosity Distance"=4,
-                                         "Comoving Radial Distance Tran"=6,
-                                         "DistMod"=7,
-                                         "Comoving Volume"=9,
-                                         "Universe Age at z"=12,
-                                         "Media Distance"=13
+                                         "a"="a",
+                                         "Comoving Radial Distance LoS"="CoDist",
+                                         "Luminosity Distance"="LumDist",
+                                         "Comoving Radial Distance Tran"="CoDistTran",
+                                         "Distance Modulus"="DistMod",
+                                         "Comoving Volume"="CoVol",
+                                         "Universe Age at z"="UniAgeAtz",
+                                         "Look-back time to z"="TravelTime"
                                      ),selected=13),
                                      textInput(inputId="custom_calcValue", label=uiOutput("custom_calcUnit"), value="")
                                      
@@ -69,35 +69,35 @@ shinyUI(fluidPage(
                          )
                      ),
                      fluidRow(
-                         selectInput("plotAxis", label="x Axis", choices = list("z"=1,
-                                                                                "Media Distance"=13
+                         selectInput("plotAxis", label="x Axis", choices = list("z"="z",
+                                                                                "Look-back time to z"="TravelTime"
                          ),selected=1),
                          checkboxInput("plotLogY", label = "Log y axis", value = FALSE)
                      ),
                      fluidRow(
                          h4("Custom Plot:"),
-                         selectInput(inputId="customXAxis", label="x Axis", choices = list("z"=1,
-                                                                                           "a"=2,
-                                                                                           "Comoving Radial Distance LoS"=3,
-                                                                                           "Luminosity Distance"=4,
-                                                                                           "Comoving Radial Distance Tran"=6,
-                                                                                           "DistMod"=7,
-                                                                                           "Comoving Volume"=9,
-                                                                                           "Universe Age at z"=12,
-                                                                                           "Media Distance"=13
+                         selectInput(inputId="customXAxis", label="x Axis", choices = list("z"="z",
+                                                                                           "a"="a",
+                                                                                           "Comoving Radial Distance LoS"="CoDist",
+                                                                                           "Luminosity Distance"="LumDist",
+                                                                                           "Comoving Radial Distance Tran"="CoDistTran",
+                                                                                           "Distance Modulus"="DistMod",
+                                                                                           "Comoving Volume"="CoVol",
+                                                                                           "Universe Age at z"="UniAgeAtz",
+                                                                                           "Look-back time to z"="TravelTime"
                          ),selected=12),
                          checkboxInput("customLogX", label = "Log x axis", value = FALSE),
-                         selectInput(inputId="customYAxis", label="y Axis", choices = list("z"=1,
-                                                                                           "a"=2,
-                                                                                           "Comoving Radial Distance LoS"=3,
-                                                                                           "Luminosity Distance"=4,
-                                                                                           "Angular Size Distance"=5,
-                                                                                           "Comoving Radial Distance Tran"=6,
-                                                                                           "DistMod"=7,
-                                                                                           "Angular Size"=8,
-                                                                                           "Comoving Volume"=9,
-                                                                                           "Universe Age at z"=12,
-                                                                                           "Media Distance"=13
+                         selectInput(inputId="customYAxis", label="y Axis", choices = list("z"="z",
+                                                                                           "a"="a",
+                                                                                           "Comoving Radial Distance LoS"="CoDist",
+                                                                                           "Luminosity Distance"="LumDist",
+                                                                                           "Angular Size Distance"="AngDist",
+                                                                                           "Comoving Radial Distance Tran"="CoDistTran",
+                                                                                           "Distance Modulus"="DistMod",
+                                                                                           "Angular Size"="AngSize",
+                                                                                           "Comoving Volume"="CoVol",
+                                                                                           "Universe Age at z"="UniAgeAtz",
+                                                                                           "Look-back time to z"="TravelTime"
                          ),selected=7),
                          checkboxInput("customLogY", label = "Log y axis", value = FALSE)
                      ),
@@ -169,7 +169,7 @@ shinyUI(fluidPage(
     ),
     tabPanel("Info",
              h3("About"),
-             p(span("Welcome to ICRAR's Astronomy Calculator!", style="color:#08c"),
+             p(span("Welcome to ICRAR's Cosmology Calculator!", style="color:#08c"),
                "This calculator is written in the programming language R, and uses the library Shiny to provide
                    the interface."),
              br(),
@@ -258,7 +258,7 @@ shinyUI(fluidPage(
                 CoVol = ((4 * pi * HubDist^3/(2 * OmegaK)) *
                     ((CoDistTran/HubDist) * sqrt(1 + OmegaK * (CoDistTran/HubDist)^2) -
                     (1/sqrt(abs(OmegaK))) * asin(sqrt(abs(OmegaK)) *
-                    (CoDistTran/HubDist))))/1e+09
+                    (CoDistTran/HubDist))))/1e+09s
             }
         }
         a = 1/(1 + z)

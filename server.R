@@ -25,42 +25,66 @@ shinyServer(function(input, output, clientData, session) {
             OmegaL <- as.numeric(isolate(input$calcOmegaL))
         }
         
-        # custom variables
-        useCustom <- FALSE
+        # if the custom field has a number, use the custom calculation
         if(nchar(isolate(input$custom_calcValue)) > 0) {
-            useCustom <- TRUE
-            axis <- lookUpTable[[as.numeric(isolate(input$custom_calcAxis))]]
+            axis <- lookUpTable[[input$custom_calcAxis]]
             axisValue <- as.numeric(isolate(input$custom_calcValue))
-        }
-        
-        # get results
-        if(useCustom) {
             r <- cosmapval(axisValue, axis$val, H0, OmegaM, OmegaL, zrange=c(0,100), res=12, iter=12, age=TRUE)
             updateTextInput(session, "calcz", value = r$z)
+            r <- merge(r, cosgrow(r$z, H0, OmegaM, OmegaL))
         }
         else {
             r <- cosdist(z, H0, OmegaM, OmegaL, age=TRUE)
+            r <- merge(r, cosgrow(z, H0, OmegaM, OmegaL))
         }
         
-        # build output
-        if(useCustom) {
-            l <- paste0("<h4>For ", axis$label," = ", r[[axis$val]], " (±", as.numeric(r$error)*100, "%) ", axis$unit, ":</h4>")
-        }
-        else {
-            l <- paste0("<h4>For z = ", z, " :</h4>")
-        }
-        for(t in lookUpTable) {
-            l <- append(l, paste0("<p>The <b>",t$label,"</b> is <span style='color:#08c;'>", r[[t$val]], "</span> ", t$unit, "</p>"))
-        }
+        # build output:
+        # z, a
+        # distances
+        # dependent times
+        # independent times
+        # structural evolution properties
+        
+        list(
+            HTML("<h4>Results :</h4>"),
+            HTML("<p>The <b>z</b> is <span style='color:#08c;'>", r$z, "</span></p>"),
+            HTML("<p>The <b>a</b> is <span style='color:#08c;'>", r$a, "</span></p>"),
+            HTML("<br/>"),
+            HTML("<h4>Distances :</h4>"),
+            HTML("<p>The <b>Comoving Radial Distance LoS</b> is <span style='color:#08c;'>", r$CoDist, "</span> (Mpc)</p>"),
+            HTML("<p>The <b>Luminosity Distance</b> is <span style='color:#08c;'>", r$LumDist, "</span> (Mpc)</p>"),
+            HTML("<p>The <b>Angular Size Distance</b> is <span style='color:#08c;'>", r$AngDist, "</span> (Mpc)</p>"),
+            HTML("<p>The <b>Comoving Radial Distance Tran</b> is <span style='color:#08c;'>", r$CoDistTran, "</span> (Mpc)</p>"),
+            HTML("<p>The <b>Distance Modulus</b> is <span style='color:#08c;'>", r$DistMod, "</span> (mag)</p>"),
+            HTML("<p>The <b>Angular Size</b> is <span style='color:#08c;'>", r$AngSize, "</span> (kpc/arcsec)</p>"),
+            HTML("<p>The <b>Comoving Volume</b> is <span style='color:#08c;'>", r$CoVol, "</span> (Gpc³)</p>"),
+            HTML("<br/>"),
+            HTML("<h4>z dependent times :</h4>"),
+            HTML("<p>The <b>Universe Age at z</b> is <span style='color:#08c;'>", r$UniAgeAtz, "</span> (Gyr)</p>"),
+            HTML("<p>The <b>Look-back time to z</b> is <span style='color:#08c;'>", r$TravelTime, "</span> (Gyr)</p>"),
+            HTML("<br/>"),
+            HTML("<h4>z independent times :</h4>"),
+            HTML("<p>The <b>Hubble Time</b> is <span style='color:#08c;'>", r$HubTime, "</span> (Gyr)</p>"),
+            HTML("<p>The <b>Universe Age Now</b> is <span style='color:#08c;'>", r$UniAgeNow, "</span> (Gyr)</p>"),
+            HTML("<br/>"),
+            HTML("<h4>Structural evolution properties :</h4>"),
+            HTML("<p>The <b>OmegaM</b> is <span style='color:#08c;'>", r$OmegaM, "</span></p>"),
+            HTML("<p>The <b>OmegaL</b> is <span style='color:#08c;'>", r$OmegaL, "</span></p>"),
+            HTML("<p>The <b>OmegaK</b> is <span style='color:#08c;'>", r$OmegaK, "</span></p>"),
+            HTML("<p>The <b>Growth Factor</b> is <span style='color:#08c;'>", r$Factor, "</span></p>"),
+            HTML("<p>The <b>Growth Rate</b> is <span style='color:#08c;'>", r$Rate, "</span></p>"),
+            HTML("<p>The <b>Universe Critical Mass Density</b> is <span style='color:#08c;'>", r$RhoCrit, "</span> (Msol/Mpc³)</p>")
+            )
+        
         
         # the output
-        HTML(l)
+        #HTML(l)
     })
     
     output$custom_calcUnit <- renderUI({
         
         # append unit to text
-        var <- lookUpTable[[as.numeric(input$custom_calcAxis)]]
+        var <- lookUpTable[[input$custom_calcAxis]]
         str <- paste("Value", var$unit)
         
         # if the input box has something, make text green
@@ -111,7 +135,7 @@ shinyServer(function(input, output, clientData, session) {
         # get inputs
         input$submitPlot
         r <- isolate(plotResult())
-        xAxis <- lookUpTable[[as.numeric(input$plotAxis)]]
+        xAxis <- lookUpTable[[input$plotAxis]]
         useLog <- input$plotLogY
         
         # check for log
@@ -137,8 +161,8 @@ shinyServer(function(input, output, clientData, session) {
         # get inputs
         input$submitPlot
         r <- isolate(plotResult())
-        xAxis <- lookUpTable[[as.numeric(input$customXAxis)]]
-        yAxis <- lookUpTable[[as.numeric(input$customYAxis)]]
+        xAxis <- lookUpTable[[input$customXAxis]]
+        yAxis <- lookUpTable[[input$customYAxis]]
         useLogX <- input$customLogX
         useLogY <- input$customLogY
         
@@ -150,6 +174,8 @@ shinyServer(function(input, output, clientData, session) {
             log <- 'x'
         if(useLogY)
             log <- paste0(log, 'y')
+        
+        # TODO: add the cosgrow variables to the custom axes, use cbind
         
         # plot
         magplot(x=r[[xAxis$val]], y=r[[yAxis$val]], main=paste0(yAxis$label, " vs ", xAxis$label),
