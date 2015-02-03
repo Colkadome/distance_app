@@ -9,14 +9,14 @@ shinyUI(fluidPage(
     tabsetPanel(tabPanel("Calculation",
                          sidebarLayout(
                              sidebarPanel(
+                                 actionButton(inputId="submitCalc", label=span("Calculate"), icon("random")),
+                                 h4("Set Variables:"),
                                  fluidRow(
-                                     actionButton(inputId="submitCalc", label=span("Calculate"), icon("random")),
-                                     h4("Set Variables:"),
                                      column(6,
                                             textInput(inputId="calcz", label="z", value="1"),
                                             textInput(inputId="calcOmegaM", label="OmegaM", value="0.3")
                                      ),
-                                     column(5,
+                                     column(6,
                                             textInput(inputId="calcH0", label="H0", value="70.0"),
                                             textInput(inputId="calcOmegaL", label="OmegaL", value="1-OmegaM")
                                      )
@@ -39,15 +39,16 @@ shinyUI(fluidPage(
                                          "Growth Factor"="Factor",
                                          "Growth Rate"="Rate",
                                          "Universe Critical Mass Density"="RhoCrit"
-                                     ),selected=13),
+                                     ),selected="CoVol"),
                                      textInput(inputId="custom_calcValue", label=uiOutput("custom_calcUnit"), value="")
                                      
                                  )
                              ),
                              mainPanel(
                                  uiOutput("calcOut")
-                             ) 
-                         )
+                             )
+                         ),
+                         br(),br(),br()
     ),
     tabPanel("Plot",
              sidebarLayout(
@@ -61,24 +62,24 @@ shinyUI(fluidPage(
                          column(6,
                                 textInput(inputId="plotOmegaM", label="OmegaM", value="0.3")
                          ),
-                         column(5,
+                         column(6,
                                 textInput(inputId="plotOmegaL", label="OmegaL", value="1-OmegaM")
                          )
                      ),
+                     h4("Plot Options:"),
                      fluidRow(
-                         h4("Plot Options:"),
                          column(6,
                                 textInput(inputId="plotStart", label="z Start", value="0"),
                                 textInput(inputId="plotRes", label="z Resolution", value="1000")
                          ),
-                         column(5,
+                         column(6,
                                 textInput(inputId="plotEnd", label="z End", value="1")
                          )
                      ),
                      fluidRow(
                          selectInput("plotAxis", label="x Axis", choices = list("z"="z",
                                                                                 "Look-back time to z"="TravelTime"
-                         ),selected=1),
+                         ),selected="z"),
                          checkboxInput("plotLogY", label = "Log y axis", value = FALSE)
                      ),
                      fluidRow(
@@ -99,7 +100,7 @@ shinyUI(fluidPage(
                                                                                            "Growth Factor"="Factor",
                                                                                            "Growth Rate"="Rate",
                                                                                            "Universe Critical Mass Density"="RhoCrit"
-                         ),selected=12),
+                         ),selected="TravelTime"),
                          checkboxInput("customLogX", label = "Log x axis", value = FALSE),
                          selectInput(inputId="customYAxis", label="y Axis", choices = list("z"="z",
                                                                                            "a"="a",
@@ -119,7 +120,7 @@ shinyUI(fluidPage(
                                                                                            "Growth Factor"="Factor",
                                                                                            "Growth Rate"="Rate",
                                                                                            "Universe Critical Mass Density"="RhoCrit"
-                         ),selected=7),
+                         ),selected="CoVol"),
                          checkboxInput("customLogY", label = "Log y axis", value = FALSE)
                      ),
                      fluidRow(
@@ -132,7 +133,8 @@ shinyUI(fluidPage(
                      plotOutput("plotDistOut"),
                      plotOutput("customPlotOut")
                  )
-             )
+             ),
+             br(),br(),br()
     ),
     tabPanel("Survey Design",
              sidebarLayout(
@@ -145,7 +147,7 @@ shinyUI(fluidPage(
                          column(6,
                                 textInput(inputId="sky_area", label="Area", value="59.97867933223287")
                          ),
-                         column(5,
+                         column(6,
                                 selectInput(inputId="sky_areaUnit", label="Unit", choices = list("deg²"="deg2",
                                                                                                  "amin²"="amin2",
                                                                                                  "asec²"="asec2",
@@ -161,7 +163,7 @@ shinyUI(fluidPage(
                                 textInput(inputId="sky_OmegaM", label="OmegaM", value="0.3"),
                                 textInput(inputId="sky_minz", label="min z", value="0")
                          ),
-                         column(5,
+                         column(6,
                                 textInput(inputId="sky_OmegaL", label="OmegaL", value="1-OmegaM"),
                                 textInput(inputId="sky_maxz", label="max z", value="0.5")
                          )
@@ -176,7 +178,7 @@ shinyUI(fluidPage(
                                 textInput(inputId="sky_long1", label="Longitude 1 (deg)", value="129"),
                                 textInput(inputId="sky_lat1", label="Latitude 1 (deg)", value="-2")
                          ),
-                         column(5,
+                         column(6,
                                 textInput(inputId="sky_long2", label="Longitude 2 (deg)", value="141"),
                                 textInput(inputId="sky_lat2", label="Latitude 2 (deg)", value="3")
                          )
@@ -186,7 +188,8 @@ shinyUI(fluidPage(
                      h4("Result:"),
                      uiOutput("sky_out")
                  ) 
-             )
+             ),
+             br(),br(),br()
     ),
     tabPanel("Info",
              h3("About"),

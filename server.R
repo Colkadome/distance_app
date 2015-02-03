@@ -24,7 +24,7 @@ shinyServer(function(input, output, clientData, session) {
         if(nchar(isolate(input$custom_calcValue)) > 0) {
             axis <- lookUpTable[[input$custom_calcAxis]]
             axisValue <- as.numeric(isolate(input$custom_calcValue))
-            r <- cosmapval(axisValue, axis$val, H0, OmegaM, OmegaL, zrange=c(0,100), res=12, iter=12, age=TRUE)
+            r <- cosmapval(axisValue, axis$val, H0, OmegaM, OmegaL, zrange=c(0,100), res=12, iter=12, out='cos')
             updateTextInput(session, "calcz", value = r$z)
             r <- merge(r, cosgrow(r$z, H0, OmegaM, OmegaL))
         }
