@@ -9,11 +9,6 @@ shinyServer(function(input, output, clientData, session) {
         # reactive output
         input$submitCalc
         
-        # HOW TO CHANGE INPUT DATA
-        #updateTextInput(session, "custom_calcValue",
-        #                value = paste("New text")
-        #)
-        
         # get variables
         z <- isolate(as.numeric(input$calcz))
         H0 <- isolate(as.numeric(input$calcH0))
@@ -38,13 +33,7 @@ shinyServer(function(input, output, clientData, session) {
             r <- merge(r, cosgrow(z, H0, OmegaM, OmegaL))
         }
         
-        # build output:
-        # z, a
-        # distances
-        # dependent times
-        # independent times
-        # structural evolution properties
-        
+        # build output 
         list(
             HTML("<h4>Results :</h4>"),
             HTML("<p>The <b>z</b> is <span style='color:#08c;'>", r$z, "</span></p>"),
@@ -116,6 +105,7 @@ shinyServer(function(input, output, clientData, session) {
         # get results
         z <- seq(start, end, (end-start)/res)
         r <- cosdist(z, H0, OmegaM, OmegaL, TRUE)
+        r <- merge(r, cosgrow(z, H0, OmegaM, OmegaL))
         
         return (r)
     })

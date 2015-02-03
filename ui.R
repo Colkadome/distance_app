@@ -31,7 +31,14 @@ shinyUI(fluidPage(
                                          "Distance Modulus"="DistMod",
                                          "Comoving Volume"="CoVol",
                                          "Universe Age at z"="UniAgeAtz",
-                                         "Look-back time to z"="TravelTime"
+                                         "Look-back time to z"="TravelTime",
+                                         "H"="H",
+                                         "OmegaM"="OmegaM",
+                                         "OmegaL"="OmegaL",
+                                         "OmegaK"="OmegaK",
+                                         "Growth Factor"="Factor",
+                                         "Growth Rate"="Rate",
+                                         "Universe Critical Mass Density"="RhoCrit"
                                      ),selected=13),
                                      textInput(inputId="custom_calcValue", label=uiOutput("custom_calcUnit"), value="")
                                      
@@ -84,7 +91,14 @@ shinyUI(fluidPage(
                                                                                            "Distance Modulus"="DistMod",
                                                                                            "Comoving Volume"="CoVol",
                                                                                            "Universe Age at z"="UniAgeAtz",
-                                                                                           "Look-back time to z"="TravelTime"
+                                                                                           "Look-back time to z"="TravelTime",
+                                                                                           "H"="H",
+                                                                                           "OmegaM"="OmegaM",
+                                                                                           "OmegaL"="OmegaL",
+                                                                                           "OmegaK"="OmegaK",
+                                                                                           "Growth Factor"="Factor",
+                                                                                           "Growth Rate"="Rate",
+                                                                                           "Universe Critical Mass Density"="RhoCrit"
                          ),selected=12),
                          checkboxInput("customLogX", label = "Log x axis", value = FALSE),
                          selectInput(inputId="customYAxis", label="y Axis", choices = list("z"="z",
@@ -97,7 +111,14 @@ shinyUI(fluidPage(
                                                                                            "Angular Size"="AngSize",
                                                                                            "Comoving Volume"="CoVol",
                                                                                            "Universe Age at z"="UniAgeAtz",
-                                                                                           "Look-back time to z"="TravelTime"
+                                                                                           "Look-back time to z"="TravelTime",
+                                                                                           "H"="H",
+                                                                                           "OmegaM"="OmegaM",
+                                                                                           "OmegaL"="OmegaL",
+                                                                                           "OmegaK"="OmegaK",
+                                                                                           "Growth Factor"="Factor",
+                                                                                           "Growth Rate"="Rate",
+                                                                                           "Universe Critical Mass Density"="RhoCrit"
                          ),selected=7),
                          checkboxInput("customLogY", label = "Log y axis", value = FALSE)
                      ),
