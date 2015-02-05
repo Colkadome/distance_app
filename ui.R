@@ -194,7 +194,7 @@ shinyUI(fluidPage(
     tabPanel("Info",
              h3("About"),
              p(span("Welcome to ICRAR's Cosmology Calculator!", style="color:#08c"),
-               "This calculator is written in the programming language R, and uses the library Shiny to provide
+               "This calculator was written by", strong("Joseph Dunne"), "and", strong("Aaron Robotham"), "in the programming language R, and uses the library Shiny to provide
                    the interface."),
              br(),
              h4("Calculation", style='color:#08c'),
@@ -242,9 +242,11 @@ shinyUI(fluidPage(
              br(),
              h4("References"),
              p(a("D. W. Hogg et all 1999 (arXiv 9905116)", href="http://arxiv.org/abs/astro-ph/9905116", target="_blank")),
-             p(a("Wright E.L., 2006, PASP, 118, 1711", href="http://arxiv.org/abs/astro-ph/0609593", target="_blank")),
-             br(),
-             div("Written by Aaron Robotham, Joseph Dunne (2015)", style="font-size:10px; color:grey;", align="center")
+             p(a("Wright E.L., 2006, PASP, 118, 1711", href="http://adsabs.harvard.edu/abs/2006PASP..118.1711W", target="_blank")),
+             p(a("Hamilton A.J.S., 2001, MNRAS 322 419", href="http://adsabs.harvard.edu/abs/2001MNRAS.322..419H", target="_blank")),
+             p(a("Lahav O., et al., 1991, MNRAS, 251, 136", href="http://adsabs.harvard.edu/abs/1991MNRAS.251..128L", target="_blank")),
+             br(),br(),br()
+             
     ),
     tabPanel("R Code",
              p("Basic cosmological calculator R code used server-side to generate outputs."),
