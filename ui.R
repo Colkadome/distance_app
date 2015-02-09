@@ -241,29 +241,33 @@ shinyUI(fluidPage(
              ),
              br(),
              h4("References"),
-             p(a("D. W. Hogg et all 1999 (arXiv 9905116)", href="http://arxiv.org/abs/astro-ph/9905116", target="_blank")),
-             p(a("Wright E.L., 2006, PASP, 118, 1711", href="http://adsabs.harvard.edu/abs/2006PASP..118.1711W", target="_blank")),
-             p(a("Hamilton A.J.S., 2001, MNRAS 322 419", href="http://adsabs.harvard.edu/abs/2001MNRAS.322..419H", target="_blank")),
+             p(a("Hamilton A. J. S., 2001, MNRAS 322 419", href="http://adsabs.harvard.edu/abs/2001MNRAS.322..419H", target="_blank")),
+             p(a("Hogg D. W., et al., 1999 (arXiv 9905116)", href="http://arxiv.org/abs/astro-ph/9905116", target="_blank")),
              p(a("Lahav O., et al., 1991, MNRAS, 251, 136", href="http://adsabs.harvard.edu/abs/1991MNRAS.251..128L", target="_blank")),
+             p(a("Wright E. L., 2006, PASP, 118, 1711", href="http://adsabs.harvard.edu/abs/2006PASP..118.1711W", target="_blank")),
              br(),br(),br()
              
     ),
     tabPanel("R Code",
-             p("Basic cosmological calculator R code used server-side to generate outputs."),
+             p("Basic cosmological distance calculator R code used server-side to generate outputs."),
              p("Written by Aaron Robotham (see", span("Info", style='color:#08c'), "tab for references)."),
-             HTML("<pre class='prettyprint lang-r' style='padding:5px'>function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM, age = FALSE) {
+             strong("cosdist"),
+             HTML("<pre class='prettyprint lang-r' style='padding:5px'>function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM, 
+    age = FALSE) 
+{
     OmegaK = 1 - OmegaM - OmegaL
     Einv = function(z, OmegaM, OmegaL, OmegaK) {
         1/sqrt(OmegaM * (1 + z)^3 + OmegaK * (1 + z)^2 + OmegaL)
     }
     if (age) {
         Einvz = function(z, OmegaM, OmegaL, OmegaK) {
-            1/(sqrt(OmegaM * (1 + z)^3 + OmegaK * (1 + z)^2 + OmegaL) * (1 + z))
+            1/(sqrt(OmegaM * (1 + z)^3 + OmegaK * (1 + z)^2 + 
+            OmegaL) * (1 + z))
         }
     }
     temp = function(z, H0, OmegaM, OmegaL, OmegaK) {
         HubDist = (299792.458/H0)
-        CoDist = HubDist * integrate(Einv, 0, z, OmegaM = OmegaM,
+        CoDist = HubDist * integrate(Einv, 0, z, OmegaM = OmegaM, 
             OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000)$value
         if (OmegaK == 0) {
             CoDistTran = CoDist
@@ -271,20 +275,20 @@ shinyUI(fluidPage(
         }
         else {
             if (OmegaK > 0) {
-                CoDistTran = HubDist * (1/sqrt(OmegaK)) *
-                    sinh(sqrt(OmegaK) * CoDist/HubDist)
-                CoVol = ((4 * pi * HubDist^3/(2 * OmegaK)) *
-                    ((CoDistTran/HubDist) * sqrt(1 + OmegaK * (CoDistTran/HubDist)^2) -
-                    (1/sqrt(abs(OmegaK))) * asinh(sqrt(abs(OmegaK)) *
+                CoDistTran = HubDist * (1/sqrt(OmegaK)) * sinh(sqrt(OmegaK) * 
+                    CoDist/HubDist)
+                CoVol = ((4 * pi * HubDist^3/(2 * OmegaK)) * 
+                    ((CoDistTran/HubDist) * sqrt(1 + OmegaK * (CoDistTran/HubDist)^2) - 
+                    (1/sqrt(abs(OmegaK))) * asinh(sqrt(abs(OmegaK)) * 
                     (CoDistTran/HubDist))))/1e+09
             }
             if (OmegaK < 0) {
-                CoDistTran = HubDist * (1/sqrt(abs(OmegaK))) *
+                CoDistTran = HubDist * (1/sqrt(abs(OmegaK))) * 
                     sin(sqrt(abs(OmegaK)) * CoDist/HubDist)
-                CoVol = ((4 * pi * HubDist^3/(2 * OmegaK)) *
-                    ((CoDistTran/HubDist) * sqrt(1 + OmegaK * (CoDistTran/HubDist)^2) -
-                    (1/sqrt(abs(OmegaK))) * asin(sqrt(abs(OmegaK)) *
-                    (CoDistTran/HubDist))))/1e+09s
+                CoVol = ((4 * pi * HubDist^3/(2 * OmegaK)) * 
+                    ((CoDistTran/HubDist) * sqrt(1 + OmegaK * (CoDistTran/HubDist)^2) - 
+                    (1/sqrt(abs(OmegaK))) * asin(sqrt(abs(OmegaK)) * 
+                    (CoDistTran/HubDist))))/1e+09
             }
         }
         a = 1/(1 + z)
@@ -294,25 +298,49 @@ shinyUI(fluidPage(
         AngSize = AngDist * (pi/(180 * 60 * 60)) * 1000
         if (age) {
             HT = (3.08568025e+19/(H0 * 31556926))/1e+09
-            UniAge = HT * integrate(Einvz, 0, Inf, OmegaM = OmegaM,
+            UniAge = HT * integrate(Einvz, 0, Inf, OmegaM = OmegaM, 
                 OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000)$value
-            zAge = HT * integrate(Einvz, 0, z, OmegaM = OmegaM,
+            zAge = HT * integrate(Einvz, 0, z, OmegaM = OmegaM, 
                 OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000)$value
         }
         if (age) {
-            return = c(z = z, a = a, CoDist = CoDist, LumDist = LumDist,
-                AngDist = AngDist, CoDistTran = CoDistTran, DistMod = DistMod,
-                AngSize = AngSize, CoVol = CoVol, HubTime = HT,
-                UniAgeNow = UniAge, UniAgeAtz = UniAge - zAge,
+            return = c(z = z, a = a, CoDist = CoDist, LumDist = LumDist, 
+                AngDist = AngDist, CoDistTran = CoDistTran, DistMod = DistMod, 
+                AngSize = AngSize, CoVol = CoVol, HubTime = HT, 
+                UniAgeNow = UniAge, UniAgeAtz = UniAge - zAge, 
                 TravelTime = zAge)
         }
         else {
-            return = c(z = z, a = a, CoDist = CoDist, LumDist = LumDist,
-                AngDist = AngDist, CoDistTran = CoDistTran, DistMod = DistMod,
+            return = c(z = z, a = a, CoDist = CoDist, LumDist = LumDist, 
+                AngDist = AngDist, CoDistTran = CoDistTran, DistMod = DistMod, 
                 AngSize = AngSize, CoVol = CoVol)
         }
     }
-    return(as.data.frame(t(Vectorize(temp)(z = z, H0 = H0, OmegaM = OmegaM, OmegaL = OmegaL, OmegaK = OmegaK))))
+    return(as.data.frame(t(Vectorize(temp)(z = z, H0 = H0, OmegaM = OmegaM, 
+        OmegaL = OmegaL, OmegaK = OmegaK))))
+}</pre>"
+             ),
+             strong("cosgrow"),
+             HTML("<pre class='prettyprint lang-r' style='padding:5px'>function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM) 
+{
+    OmegaK = 1 - OmegaM - OmegaL
+    OmegaSum = OmegaM * (1 + z)^3 + OmegaK * (1 + z)^2 + OmegaL
+    Hz = H0 * sqrt(OmegaSum)
+    OmegaMAtz = (OmegaM * (1 + z)^3)/OmegaSum
+    OmegaLAtz = OmegaL/OmegaSum
+    OmegaKAtz = (OmegaK * (1 + z)^2)/OmegaSum
+    Factor = (5 * OmegaMAtz/2)/(OmegaMAtz^(4/7) - OmegaLAtz + 
+        (1 + 0.5 * OmegaMAtz) * (1 + OmegaLAtz/70))
+    Rate = OmegaMAtz^(4/7) + (1 + OmegaMAtz/2) * (OmegaLAtz/70)
+    G = 6.67384e-11
+    Hub2 = cosgrowH(z = z, H0 = H0, OmegaM = OmegaM, OmegaL = OmegaL)^2
+    km2m = 1000
+    Mpc2m = 3.08567758e+22
+    Msol2kg = 1.9891e+30
+    RhoCrit = (3 * Hub2)/(8 * pi * G) * (km2m^2) * Mpc2m/Msol2kg
+    return(data.frame(z = z, a = 1/(1 + z), H = Hz, OmegaM = OmegaMAtz, 
+        OmegaL = OmegaLAtz, OmegaK = OmegaKAtz, Factor = Factor, 
+        Rate = Rate, RhoCrit = RhoCrit))
 }</pre>"
              )
     )
