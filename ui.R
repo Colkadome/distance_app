@@ -27,7 +27,7 @@ shinyUI(fluidPage(
                                      h4("Custom Calc:"),
                                      selectInput(inputId="custom_calcAxis", label="Variable", choices = {l<-list();
                                                                                                          for(i in 1:length(lookUpTable)) {
-                                                                                                             if(lookUpTable[[i]]$val != 'z')
+                                                                                                             if(lookUpTable[[i]]$val != 'z' && lookUpTable[[i]]$val != 'AngSize' && lookUpTable[[i]]$val != 'AngDist')
                                                                                                                 l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
                                                                                                          };l},
                                                  selected="CoVol"),
