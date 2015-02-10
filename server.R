@@ -120,11 +120,9 @@ shinyServer(function(input, output, clientData, session) {
         
         # get results
         r <- cosdist(z, H0, OmegaM, OmegaL, TRUE)
-        r <- merge(r, cosgrow(z, H0, OmegaM, OmegaL))
+        r <- cbind(r, cosgrow(z, H0, OmegaM, OmegaL))
         # unit conversion
         r$RhoCrit <- r$RhoCrit/1e10
-        
-        # BUG : at certain start/end/res combinations, z will go to 0 or give strange behaviour!
         
         return (r)
     })
