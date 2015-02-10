@@ -4,9 +4,9 @@ source("table.R")
 
 shinyServer(function(input, output, clientData, session) {
     
-    # The Cosmology Calculation #
-    #############################
-    output$calcOut <- renderUI ({
+    # The Cosmo Calc #
+    ##################
+    calcResult <- reactive ({
         
         # make output reactive to 'Calculate' button
         input$submitCalc
@@ -44,40 +44,53 @@ shinyServer(function(input, output, clientData, session) {
         # unit conversion
         r$RhoCrit <- r$RhoCrit/1e10
         
-        # get the lookUpTable (to shorten name)
+        return (r)
+    })
+    
+    
+    # The Calculation Output #
+    ##########################
+    output$calcOut <- renderUI ({
+        
+        # get calculation result + sigFigs (reactive!)
+        r <- calcResult()
+        sigF <- input$calcSigFigs
         t <- lookUpTable
+        
+        # NOTE
+        # sigF seems to have a max of 15.
         
         # build output based on the results (r) and the lookUpTable (t)
         list(
             HTML("<h4>Results :</h4>"),
-            HTML("<p>The redshift <b>z</b> is <span style='color:#08c;'>", r$z, "</span></p>"),
+            HTML("<p>The redshift <b>z</b> is <span style='color:#08c;'>", signif(r$z,digits=sigF), "</span></p>"),
             HTML("<p>The expansion factor <b>a</b> is <span style='color:#08c;'>", r$a, "</span></p>"),
             HTML("<br/>"),
             HTML("<h4>Distances :</h4>"),
-            HTML("<p>The <b>", t$CoDist$label, "</b> to z is <span style='color:#08c;'>", r$CoDist, "</span> ", t$CoDist$unit_html,"</p>"),
-            HTML("<p>The <b>", t$LumDist$label, "</b> to z is <span style='color:#08c;'>", r$LumDist, "</span> ", t$LumDist$unit_html,"</p>"),
-            HTML("<p>The <b>", t$AngDist$label, "</b> to z is <span style='color:#08c;'>", r$AngDist, "</span> ", t$AngDist$unit_html,"</p>"),
-            HTML("<p>The <b>", t$CoDistTran$label, "</b> to z is <span style='color:#08c;'>", r$CoDistTran, "</span> ", t$CoDistTran$unit_html,"</p>"),
-            HTML("<p>The <b>", t$DistMod$label, "</b> to z is <span style='color:#08c;'>", r$DistMod, "</span> ", t$DistMod$unit_html,"</p>"),
-            HTML("<p>The <b>", t$AngSize$label, "</b> at z is <span style='color:#08c;'>", r$AngSize, "</span> ", t$AngSize$unit_html,"</p>"),
-            HTML("<p>The <b>", t$CoVol$label, "</b> to z is <span style='color:#08c;'>", r$CoVol, "</span> ", t$CoVol$unit_html,"</p>"),
+            HTML("<p>The <b>", t$CoDist$label, "</b> to z is <span style='color:#08c;'>", signif(r$CoDist,digits=sigF), "</span> ", t$CoDist$unit_html,"</p>"),
+            HTML("<p>The <b>", t$LumDist$label, "</b> to z is <span style='color:#08c;'>", signif(r$LumDist,digits=sigF), "</span> ", t$LumDist$unit_html,"</p>"),
+            HTML("<p>The <b>", t$AngDist$label, "</b> to z is <span style='color:#08c;'>", signif(r$AngDist,digits=sigF), "</span> ", t$AngDist$unit_html,"</p>"),
+            HTML("<p>The <b>", t$CoDistTran$label, "</b> to z is <span style='color:#08c;'>", signif(r$CoDistTran,digits=sigF), "</span> ", t$CoDistTran$unit_html,"</p>"),
+            HTML("<p>The <b>", t$DistMod$label, "</b> to z is <span style='color:#08c;'>", signif(r$DistMod,digits=sigF), "</span> ", t$DistMod$unit_html,"</p>"),
+            HTML("<p>The <b>", t$AngSize$label, "</b> at z is <span style='color:#08c;'>", signif(r$AngSize,digits=sigF), "</span> ", t$AngSize$unit_html,"</p>"),
+            HTML("<p>The <b>", t$CoVol$label, "</b> to z is <span style='color:#08c;'>", signif(r$CoVol,digits=sigF), "</span> ", t$CoVol$unit_html,"</p>"),
             HTML("<br/>"),
             HTML("<h4>z dependent times :</h4>"),
-            HTML("<p>The <b>", t$UniAgeAtz$label, "</b> at z is <span style='color:#08c;'>", r$UniAgeAtz, "</span> ", t$UniAgeAtz$unit_html,"</p>"),
-            HTML("<p>The <b>", t$TravelTime$label, "</b> at z is <span style='color:#08c;'>", r$TravelTime, "</span> ", t$TravelTime$unit_html,"</p>"),
+            HTML("<p>The <b>", t$UniAgeAtz$label, "</b> at z is <span style='color:#08c;'>", signif(r$UniAgeAtz,digits=sigF), "</span> ", t$UniAgeAtz$unit_html,"</p>"),
+            HTML("<p>The <b>", t$TravelTime$label, "</b> at z is <span style='color:#08c;'>", signif(r$TravelTime,digits=sigF), "</span> ", t$TravelTime$unit_html,"</p>"),
             HTML("<br/>"),
             HTML("<h4>z independent times :</h4>"),
-            HTML("<p>The <b>", t$HubTime$label, "</b> is <span style='color:#08c;'>", r$HubTime, "</span> ", t$HubTime$unit_html, "</p>"),
-            HTML("<p>The <b>", t$UniAgeNow$label, "</b> is <span style='color:#08c;'>", r$UniAgeNow, "</span> ", t$UniAgeNow$unit_html, "</p>"),
+            HTML("<p>The <b>", t$HubTime$label, "</b> is <span style='color:#08c;'>", signif(r$HubTime,digits=sigF), "</span> ", t$HubTime$unit_html, "</p>"),
+            HTML("<p>The <b>", t$UniAgeNow$label, "</b> is <span style='color:#08c;'>", signif(r$UniAgeNow,digits=sigF), "</span> ", t$UniAgeNow$unit_html, "</p>"),
             HTML("<br/>"),
             HTML("<h4>Structural evolution properties :</h4>"),
-            HTML("<p>Hubble's constant <b>H</b> at z is <span style='color:#08c;'>", r$H, "</span> ", t$H$unit_html, "</p>"),
-            HTML("<p><b>", t$OmegaM$label, "</b> at z is <span style='color:#08c;'>", r$OmegaM, "</span> ", t$OmegaM$unit_html, "</p>"),
-            HTML("<p><b>", t$OmegaL$label, "</b> at z is <span style='color:#08c;'>", r$OmegaL, "</span> ", t$OmegaL$unit_html, "</p>"),
-            HTML("<p><b>", t$OmegaK$label, "</b> at z is <span style='color:#08c;'>", r$OmegaK, "</span> ", t$OmegaK$unit_html, "</p>"),
-            HTML("<p>The <b>", t$Factor$label, "</b> to z is <span style='color:#08c;'>", r$Factor, "</span> ", t$Factor$unit_html, "</p>"),
-            HTML("<p>The <b>", t$Rate$label, "</b> at z is <span style='color:#08c;'>", r$Rate, "</span> ", t$Rate$unit_html, "</p>"),
-            HTML("<p>The <b>", t$RhoCrit$label, "</b> at z is <span style='color:#08c;'>", r$RhoCrit, "</span> ", t$RhoCrit$unit_html, "</p>")
+            HTML("<p>Hubble's constant <b>H</b> at z is <span style='color:#08c;'>", signif(r$H,digits=sigF), "</span> ", t$H$unit_html, "</p>"),
+            HTML("<p><b>", t$OmegaM$label, "</b> at z is <span style='color:#08c;'>", signif(r$OmegaM,digits=sigF), "</span> ", t$OmegaM$unit_html, "</p>"),
+            HTML("<p><b>", t$OmegaL$label, "</b> at z is <span style='color:#08c;'>", signif(r$OmegaL,digits=sigF), "</span> ", t$OmegaL$unit_html, "</p>"),
+            HTML("<p><b>", t$OmegaK$label, "</b> at z is <span style='color:#08c;'>", signif(r$OmegaK,digits=sigF), "</span> ", t$OmegaK$unit_html, "</p>"),
+            HTML("<p>The <b>", t$Factor$label, "</b> to z is <span style='color:#08c;'>", signif(r$Factor,digits=sigF), "</span> ", t$Factor$unit_html, "</p>"),
+            HTML("<p>The <b>", t$Rate$label, "</b> at z is <span style='color:#08c;'>", signif(r$Rate,digits=sigF), "</span> ", t$Rate$unit_html, "</p>"),
+            HTML("<p>The <b>", t$RhoCrit$label, "</b> at z is <span style='color:#08c;'>", signif(r$RhoCrit,digits=sigF), "</span> ", t$RhoCrit$unit_html, "</p>")
         )
     })
     
@@ -241,7 +254,7 @@ shinyServer(function(input, output, clientData, session) {
     
     # Survey Design Result #
     ########################
-    output$sky_out <- renderUI ({
+    skyResult <- reactive ({
         
         # make reactive to 'Calculate' button
         input$sky_submit
@@ -263,8 +276,19 @@ shinyServer(function(input, output, clientData, session) {
         # get result
         s <- cosvol(area, maxz, minz, H0, OmegaM, OmegaL, unit)
         
-        # generate output
-        HTML("<p>The <b>Comoving Volume</b> is <span style='color:#08c;'>", s, "</span> (Gpc<sup>3</sup>)</p>")
+        return(s)
+    })
+    
+    # Survey Design Output #
+    ########################
+    output$sky_out <- renderUI ({
+        
+        # get results + sig figs
+        s <- skyResult()
+        sigF <- input$sky_SigFigs
+        
+        # output result
+        HTML("<p>The <b>Comoving Volume</b> is <span style='color:#08c;'>", signif(s,digits=sigF), "</span> (Gpc<sup>3</sup>)</p>")
     })
     
 })

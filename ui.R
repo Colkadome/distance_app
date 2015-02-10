@@ -11,7 +11,14 @@ shinyUI(fluidPage(
     tabsetPanel(tabPanel("Calculation",
                          sidebarLayout(
                              sidebarPanel(
-                                 actionButton(inputId="submitCalc", label=span("Calculate"), icon("random")),
+                                 fluidRow(
+                                     column(6,
+                                            actionButton(inputId="submitCalc", label=span("Calculate"), icon("random"))
+                                     ),
+                                     column(6,
+                                            numericInput("calcSigFigs",label="Sig Figs",value = 6)
+                                     )
+                                 ),
                                  h4("Set Variables:"),
                                  fluidRow(
                                      column(6,
@@ -23,17 +30,14 @@ shinyUI(fluidPage(
                                             textInput(inputId="calcOmegaL", label="OmegaL", value="1-OmegaM")
                                      )
                                  ),
-                                 fluidRow(
-                                     h4("Custom Calc:"),
-                                     selectInput(inputId="custom_calcAxis", label="Variable", choices = {l<-list();
-                                                                                                         for(i in 1:length(lookUpTable)) {
-                                                                                                             if(lookUpTable[[i]]$val != 'z' && lookUpTable[[i]]$val != 'AngSize' && lookUpTable[[i]]$val != 'AngDist')
-                                                                                                                l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
-                                                                                                         };l},
-                                                 selected="CoVol"),
-                                     textInput(inputId="custom_calcValue", label=uiOutput("custom_calcUnit"), value="")
-                                     
-                                 )
+                                 h4("Custom Calc:"),
+                                 selectInput(inputId="custom_calcAxis", label="Variable", choices = {l<-list();
+                                                                                                     for(i in 1:length(lookUpTable)) {
+                                                                                                         if(lookUpTable[[i]]$val != 'z' && lookUpTable[[i]]$val != 'AngSize' && lookUpTable[[i]]$val != 'AngDist')
+                                                                                                             l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
+                                                                                                     };l},
+                                             selected="CoVol"),
+                                 textInput(inputId="custom_calcValue", label=uiOutput("custom_calcUnit"), value="")
                              ),
                              mainPanel(
                                  uiOutput("calcOut")
@@ -46,11 +50,9 @@ shinyUI(fluidPage(
     tabPanel("Plot",
              sidebarLayout(
                  sidebarPanel(
-                     fluidRow(
-                         actionButton(inputId="submitPlot", label="Plot", icon("random")),
-                         h4("Set Variables:"),
-                         textInput(inputId="plotH0", label="H0", value="70.0")
-                     ),
+                     actionButton(inputId="submitPlot", label="Plot", icon("random")),
+                     h4("Set Variables:"),
+                     textInput(inputId="plotH0", label="H0", value="70.0"),
                      fluidRow(
                          column(6,
                                 textInput(inputId="plotOmegaM", label="OmegaM", value="0.3")
@@ -62,42 +64,36 @@ shinyUI(fluidPage(
                      h4("Plot Options:"),
                      fluidRow(
                          column(6,
-                                textInput(inputId="plotStart", label="z Start", value="0"),
-                                textInput(inputId="plotRes", label="z Resolution", value="1000")
+                                textInput(inputId="plotStart", label="z Start", value="0")
                          ),
                          column(6,
                                 textInput(inputId="plotEnd", label="z End", value="1")
                          )
                      ),
-                     fluidRow(
-                         selectInput("plotAxis", label="x Axis", choices = {l <- list();
-                                                                            l[[lookUpTable[["z"]]$label]] <- lookUpTable[["z"]]$val;
-                                                                            l[[lookUpTable[["TravelTime"]]$label]] <- lookUpTable[["TravelTime"]]$val;
-                                                                            l;
-                                                                            },selected="z"),
-                         checkboxInput("plotLogY", label = "Log y axis", value = FALSE)
-                     ),
-                     fluidRow(
-                         h4("Custom Plot:"),
-                         selectInput(inputId="customXAxis", label="x Axis", choices = {l<-list();
-                                                                                       for(i in 1:length(lookUpTable)) {
-                                                                                           if(lookUpTable[[i]]$val != 'AngDist' && lookUpTable[[i]]$val != 'AngSize')
-                                                                                                l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
-                                                                                       };l},
-                                                                            selected="TravelTime"),
-                         checkboxInput("customLogX", label = "Log x axis", value = FALSE),
-                         selectInput(inputId="customYAxis", label="y Axis", choices = {l<-list();
-                                                                                       for(i in 1:length(lookUpTable)) {
+                     textInput(inputId="plotRes", label="z Resolution", value="1000"),
+                     selectInput("plotAxis", label="x Axis", choices = {l <- list();
+                                                                        l[[lookUpTable[["z"]]$label]] <- lookUpTable[["z"]]$val;
+                                                                        l[[lookUpTable[["TravelTime"]]$label]] <- lookUpTable[["TravelTime"]]$val;
+                                                                        l;
+                     },selected="z"),
+                     checkboxInput("plotLogY", label = "Log y axis", value = FALSE),
+                     h4("Custom Plot:"),
+                     selectInput(inputId="customXAxis", label="x Axis", choices = {l<-list();
+                                                                                   for(i in 1:length(lookUpTable)) {
+                                                                                       if(lookUpTable[[i]]$val != 'AngDist' && lookUpTable[[i]]$val != 'AngSize')
                                                                                            l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
-                                                                                        };l},
-                                                                            selected="CoVol"),
-                         checkboxInput("customLogY", label = "Log y axis", value = FALSE)
-                     ),
-                     fluidRow(
-                         h4("Save Data:"),
-                         downloadButton("saveData_txt",label="Download as .txt"),
-                         downloadButton("saveData_csv",label="Download as .csv")
-                     )
+                                                                                   };l},
+                                 selected="TravelTime"),
+                     checkboxInput("customLogX", label = "Log x axis", value = FALSE),
+                     selectInput(inputId="customYAxis", label="y Axis", choices = {l<-list();
+                                                                                   for(i in 1:length(lookUpTable)) {
+                                                                                       l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
+                                                                                   };l},
+                                 selected="CoVol"),
+                     checkboxInput("customLogY", label = "Log y axis", value = FALSE),
+                     h4("Save Data:"),
+                     downloadButton("saveData_txt",label="Download as .txt"),
+                     downloadButton("saveData_csv",label="Download as .csv")
                  ),
                  mainPanel(
                      plotOutput("plotDistOut"),
@@ -112,9 +108,14 @@ shinyUI(fluidPage(
              sidebarLayout(
                  sidebarPanel(
                      fluidRow(
-                         actionButton(inputId="sky_submit", label=span("Calculate"), icon("random")),
-                         h4("Set Variables:")
+                         column(6,
+                                actionButton(inputId="sky_submit", label=span("Calculate"), icon("random"))
+                         ),
+                         column(6,
+                                numericInput("sky_SigFigs",label="Sig Figs",value = 6)
+                         )
                      ),
+                     h4("Set Variables:"),
                      fluidRow(
                          column(6,
                                 textInput(inputId="sky_area", label="Area", value="59.97867933223287")
@@ -127,9 +128,7 @@ shinyUI(fluidPage(
                                 ),selected="deg2")
                          )
                      ),
-                     fluidRow(
-                         textInput(inputId="sky_H0", label="H0", value="70.0")
-                     ),
+                     textInput(inputId="sky_H0", label="H0", value="70.0"),
                      fluidRow(
                          column(6,
                                 textInput(inputId="sky_OmegaM", label="OmegaM", value="0.3"),
@@ -140,11 +139,9 @@ shinyUI(fluidPage(
                                 textInput(inputId="sky_maxz", label="max z", value="0.5")
                          )
                      ),
-                     fluidRow(
-                         h4("Find Area (optional):"),
-                         actionButton(inputId="sky_setArea", icon("arrow-up")),
-                         br(), br()
-                     ),
+                     h4("Find Area (optional):"),
+                     actionButton(inputId="sky_setArea", icon("arrow-up")),
+                     br(), br(),
                      fluidRow(
                          column(6,
                                 textInput(inputId="sky_long1", label="Longitude 1 (deg)", value="129"),
