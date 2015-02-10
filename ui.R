@@ -16,7 +16,7 @@ shinyUI(fluidPage(
                                             actionButton(inputId="submitCalc", label=span("Calculate"), icon("random"))
                                      ),
                                      column(6,
-                                            numericInput("calcSigFigs",label="Sig Figs",value = 6)
+                                            numericInput("calcSigFigs",label="Sig Figs",value=6,min=1,max=15)
                                      )
                                  ),
                                  h4("Set Variables:"),
@@ -112,7 +112,7 @@ shinyUI(fluidPage(
                                 actionButton(inputId="sky_submit", label=span("Calculate"), icon("random"))
                          ),
                          column(6,
-                                numericInput("sky_SigFigs",label="Sig Figs",value = 6)
+                                numericInput("sky_SigFigs",label="Sig Figs",value=6,min=1,max=15)
                          )
                      ),
                      h4("Set Variables:"),
