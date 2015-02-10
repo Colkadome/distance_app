@@ -31,7 +31,7 @@ shinyUI(fluidPage(
                                          "Distance Modulus"="DistMod",
                                          "Comoving Volume"="CoVol",
                                          "Universe Age at z"="UniAgeAtz",
-                                         "Look-back time to z"="TravelTime",
+                                         "Look-Back Time at z"="TravelTime",
                                          "H"="H",
                                          "OmegaM"="OmegaM",
                                          "OmegaL"="OmegaL",
@@ -78,7 +78,7 @@ shinyUI(fluidPage(
                      ),
                      fluidRow(
                          selectInput("plotAxis", label="x Axis", choices = list("z"="z",
-                                                                                "Look-back time to z"="TravelTime"
+                                                                                "Look-Back Time to z"="TravelTime"
                          ),selected="z"),
                          checkboxInput("plotLogY", label = "Log y axis", value = FALSE)
                      ),
@@ -92,7 +92,7 @@ shinyUI(fluidPage(
                                                                                            "Distance Modulus"="DistMod",
                                                                                            "Comoving Volume"="CoVol",
                                                                                            "Universe Age at z"="UniAgeAtz",
-                                                                                           "Look-back time to z"="TravelTime",
+                                                                                           "Look-Back Time to z"="TravelTime",
                                                                                            "H"="H",
                                                                                            "OmegaM"="OmegaM",
                                                                                            "OmegaL"="OmegaL",
@@ -112,7 +112,7 @@ shinyUI(fluidPage(
                                                                                            "Angular Size"="AngSize",
                                                                                            "Comoving Volume"="CoVol",
                                                                                            "Universe Age at z"="UniAgeAtz",
-                                                                                           "Look-back time to z"="TravelTime",
+                                                                                           "Look-Back Time at z"="TravelTime",
                                                                                            "H"="H",
                                                                                            "OmegaM"="OmegaM",
                                                                                            "OmegaL"="OmegaL",
@@ -190,6 +190,7 @@ shinyUI(fluidPage(
                  ) 
              ),
              br(),br(),br()
+    ),
     ),
     tabPanel("Info",
              h3("About"),

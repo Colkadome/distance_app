@@ -9,13 +9,13 @@ lookUpTable <- list("z"=list("label"="z", "unit"="", "val"="z"),
                     "CoVol"=list("label"="Comoving Volume", "unit"="(Gpc³)", "val"="CoVol"),
                     "HubTime"=list("label"="Hubble Time", "unit"="(Gyr)", "val"="HubTime"),
                     "UniAgeNow"=list("label"="Universe Age Now", "unit"="(Gyr)", "val"="UniAgeNow"),
-                    "UniAgeAtz"=list("label"="Universe Age at z", "unit"="(Gyr)", "val"="UniAgeAtz"),
-                    "TravelTime"=list("label"="Look-back time to z", "unit"="(Gyr)", "val"="TravelTime"),
+                    "UniAgeAtz"=list("label"="Universe Age", "unit"="(Gyr)", "val"="UniAgeAtz"),
+                    "TravelTime"=list("label"="Look-back Time", "unit"="(Gyr)", "val"="TravelTime"),
                     "H"=list("label"="H", "unit"="(Km/s / Mpc)", "val"="H"),
                     "OmegaM"=list("label"="OmegaM", "unit"="", "val"="OmegaM"),
                     "OmegaL"=list("label"="OmegaL", "unit"="", "val"="OmegaL"),
                     "OmegaK"=list("label"="OmegaK", "unit"="", "val"="OmegaK"),
                     "Factor"=list("label"="Growth Factor", "unit"="", "val"="Factor"),
                     "Rate"=list("label"="Growth Rate", "unit"="", "val"="Rate"),
-                    "RhoCrit"=list("label"="Universe Critical Mass Density", "unit"="(Msol/Mpc³)", "val"="RhoCrit")
+                    "RhoCrit"=list("label"="Critical Mass Density", "unit"="(10<sup>10</sup>Msol/Mpc<sup>3</sup>)", "val"="RhoCrit")
 )

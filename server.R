@@ -24,6 +24,7 @@ shinyServer(function(input, output, clientData, session) {
         if(nchar(isolate(input$custom_calcValue)) > 0) {
             axis <- lookUpTable[[input$custom_calcAxis]]
             axisValue <- as.numeric(isolate(input$custom_calcValue))
+            if(axis$val=='RhoCrit'){axisValue=axisValue*1e10}
             r <- cosmapval(axisValue, axis$val, H0, OmegaM, OmegaL, zrange=c(0,100), res=12, iter=12, out='cos')
             updateTextInput(session, "calcz", value = r$z)
             r <- merge(r, cosgrow(r$z, H0, OmegaM, OmegaL))
@@ -36,8 +37,8 @@ shinyServer(function(input, output, clientData, session) {
         # build output 
         list(
             HTML("<h4>Results :</h4>"),
-            HTML("<p>The <b>z</b> is <span style='color:#08c;'>", r$z, "</span></p>"),
-            HTML("<p>The <b>a</b> is <span style='color:#08c;'>", r$a, "</span></p>"),
+            HTML("<p>The redshift <b>z</b> is <span style='color:#08c;'>", r$z, "</span></p>"),
+            HTML("<p>The expansion factor <b>a</b> is <span style='color:#08c;'>", r$a, "</span></p>"),
             HTML("<br/>"),
             HTML("<h4>Distances :</h4>"),
             HTML("<p>The <b>Comoving Radial Distance LoS</b> to z is <span style='color:#08c;'>", r$CoDist, "</span> (Mpc)</p>"),
@@ -45,8 +46,8 @@ shinyServer(function(input, output, clientData, session) {
             HTML("<p>The <b>Angular Size Distance</b> to z is <span style='color:#08c;'>", r$AngDist, "</span> (Mpc)</p>"),
             HTML("<p>The <b>Comoving Radial Distance Tran</b> to z is <span style='color:#08c;'>", r$CoDistTran, "</span> (Mpc)</p>"),
             HTML("<p>The <b>Distance Modulus</b> to z is <span style='color:#08c;'>", r$DistMod, "</span> (mag)</p>"),
-            HTML("<p>The <b>Angular Size</b> to z is <span style='color:#08c;'>", r$AngSize, "</span> (kpc/arcsec)</p>"),
-            HTML("<p>The <b>Comoving Volume</b> to z is <span style='color:#08c;'>", r$CoVol, "</span> (Gpc³)</p>"),
+            HTML("<p>The <b>Angular Size</b> at z is <span style='color:#08c;'>", r$AngSize, "</span> (kpc/arcsec)</p>"),
+            HTML("<p>The <b>Comoving Volume</b> to z is <span style='color:#08c;'>", r$CoVol, "</span> (Gpc<sup>3</sup>)</p>"),
             HTML("<br/>"),
             HTML("<h4>z dependent times :</h4>"),
             HTML("<p>The <b>Universe Age</b> at z is <span style='color:#08c;'>", r$UniAgeAtz, "</span> (Gyr)</p>"),
@@ -57,18 +58,14 @@ shinyServer(function(input, output, clientData, session) {
             HTML("<p>The <b>Universe Age Now</b> is <span style='color:#08c;'>", r$UniAgeNow, "</span> (Gyr)</p>"),
             HTML("<br/>"),
             HTML("<h4>Structural evolution properties :</h4>"),
-            HTML("<p>The <b>H</b> at z is <span style='color:#08c;'>", r$H, "</span></p>"),
-            HTML("<p>The <b>OmegaM</b> at z is <span style='color:#08c;'>", r$OmegaM, "</span></p>"),
-            HTML("<p>The <b>OmegaL</b> at z is <span style='color:#08c;'>", r$OmegaL, "</span></p>"),
-            HTML("<p>The <b>OmegaK</b> at z is <span style='color:#08c;'>", r$OmegaK, "</span></p>"),
+            HTML("<p>Hubble's constant <b>H</b> at z is <span style='color:#08c;'>", r$H, "</span></p>"),
+            HTML("<p><b>OmegaM</b> at z is <span style='color:#08c;'>", r$OmegaM, "</span></p>"),
+            HTML("<p><b>OmegaL</b> at z is <span style='color:#08c;'>", r$OmegaL, "</span></p>"),
+            HTML("<p><b>OmegaK</b> at z is <span style='color:#08c;'>", r$OmegaK, "</span></p>"),
             HTML("<p>The <b>Growth Factor</b> to z is <span style='color:#08c;'>", r$Factor, "</span></p>"),
             HTML("<p>The <b>Growth Rate</b> at z is <span style='color:#08c;'>", r$Rate, "</span></p>"),
-            HTML("<p>The <b>Universe Critical Mass Density</b> at z is <span style='color:#08c;'>", r$RhoCrit, "</span> (Msol/Mpc³)</p>")
-            )
-        
-        
-        # the output
-        #HTML(l)
+            HTML("<p>The <b>Critical Mass Density</b> at z is <span style='color:#08c;'>", r$RhoCrit, "</span> (10<sup>10</sup>Msol/Mpc<sup>3</sup>)</p>")
+        )
     })
     
     output$custom_calcUnit <- renderUI({
@@ -107,7 +104,7 @@ shinyServer(function(input, output, clientData, session) {
         z <- seq(start, end, (end-start)/res)
         r <- cosdist(z, H0, OmegaM, OmegaL, TRUE)
         r <- merge(r, cosgrow(z, H0, OmegaM, OmegaL))
-        
+        r$RhoCrit=r$RhoCrit/1e10
         return (r)
     })
     
