@@ -4,8 +4,10 @@ shinyUI(fluidPage(
     tags$head(
         tags$script(src = "google-code-prettify/run_prettify.js")
     ),
-    
     titlePanel(title="Cosmology Calculator"),
+    
+    # The Calculation tab #
+    #######################
     tabsetPanel(tabPanel("Calculation",
                          sidebarLayout(
                              sidebarPanel(
@@ -23,23 +25,12 @@ shinyUI(fluidPage(
                                  ),
                                  fluidRow(
                                      h4("Custom Calc:"),
-                                     selectInput(inputId="custom_calcAxis", label="Variable", choices = list(
-                                         "a"="a",
-                                         "Comoving Radial Distance LoS"="CoDist",
-                                         "Luminosity Distance"="LumDist",
-                                         "Comoving Radial Distance Tran"="CoDistTran",
-                                         "Distance Modulus"="DistMod",
-                                         "Comoving Volume"="CoVol",
-                                         "Universe Age at z"="UniAgeAtz",
-                                         "Look-Back Time at z"="TravelTime",
-                                         "H"="H",
-                                         "OmegaM"="OmegaM",
-                                         "OmegaL"="OmegaL",
-                                         "OmegaK"="OmegaK",
-                                         "Growth Factor"="Factor",
-                                         "Growth Rate"="Rate",
-                                         "Universe Critical Mass Density"="RhoCrit"
-                                     ),selected="CoVol"),
+                                     selectInput(inputId="custom_calcAxis", label="Variable", choices = {l<-list();
+                                                                                                         for(i in 1:length(lookUpTable)) {
+                                                                                                             if(lookUpTable[[i]]$val != 'z')
+                                                                                                                l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
+                                                                                                         };l},
+                                                 selected="CoVol"),
                                      textInput(inputId="custom_calcValue", label=uiOutput("custom_calcUnit"), value="")
                                      
                                  )
@@ -50,6 +41,8 @@ shinyUI(fluidPage(
                          ),
                          br(),br(),br()
     ),
+    # The Plot tab #
+    ################
     tabPanel("Plot",
              sidebarLayout(
                  sidebarPanel(
@@ -77,50 +70,27 @@ shinyUI(fluidPage(
                          )
                      ),
                      fluidRow(
-                         selectInput("plotAxis", label="x Axis", choices = list("z"="z",
-                                                                                "Look-Back Time to z"="TravelTime"
-                         ),selected="z"),
+                         selectInput("plotAxis", label="x Axis", choices = {l <- list();
+                                                                            l[[lookUpTable[["z"]]$label]] <- lookUpTable[["z"]]$val;
+                                                                            l[[lookUpTable[["TravelTime"]]$label]] <- lookUpTable[["TravelTime"]]$val;
+                                                                            l;
+                                                                            },selected="z"),
                          checkboxInput("plotLogY", label = "Log y axis", value = FALSE)
                      ),
                      fluidRow(
                          h4("Custom Plot:"),
-                         selectInput(inputId="customXAxis", label="x Axis", choices = list("z"="z",
-                                                                                           "a"="a",
-                                                                                           "Comoving Radial Distance LoS"="CoDist",
-                                                                                           "Luminosity Distance"="LumDist",
-                                                                                           "Comoving Radial Distance Tran"="CoDistTran",
-                                                                                           "Distance Modulus"="DistMod",
-                                                                                           "Comoving Volume"="CoVol",
-                                                                                           "Universe Age at z"="UniAgeAtz",
-                                                                                           "Look-Back Time to z"="TravelTime",
-                                                                                           "H"="H",
-                                                                                           "OmegaM"="OmegaM",
-                                                                                           "OmegaL"="OmegaL",
-                                                                                           "OmegaK"="OmegaK",
-                                                                                           "Growth Factor"="Factor",
-                                                                                           "Growth Rate"="Rate",
-                                                                                           "Universe Critical Mass Density"="RhoCrit"
-                         ),selected="TravelTime"),
+                         selectInput(inputId="customXAxis", label="x Axis", choices = {l<-list();
+                                                                                       for(i in 1:length(lookUpTable)) {
+                                                                                           if(lookUpTable[[i]]$val != 'AngDist' && lookUpTable[[i]]$val != 'AngSize')
+                                                                                                l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
+                                                                                       };l},
+                                                                            selected="TravelTime"),
                          checkboxInput("customLogX", label = "Log x axis", value = FALSE),
-                         selectInput(inputId="customYAxis", label="y Axis", choices = list("z"="z",
-                                                                                           "a"="a",
-                                                                                           "Comoving Radial Distance LoS"="CoDist",
-                                                                                           "Luminosity Distance"="LumDist",
-                                                                                           "Angular Size Distance"="AngDist",
-                                                                                           "Comoving Radial Distance Tran"="CoDistTran",
-                                                                                           "Distance Modulus"="DistMod",
-                                                                                           "Angular Size"="AngSize",
-                                                                                           "Comoving Volume"="CoVol",
-                                                                                           "Universe Age at z"="UniAgeAtz",
-                                                                                           "Look-Back Time at z"="TravelTime",
-                                                                                           "H"="H",
-                                                                                           "OmegaM"="OmegaM",
-                                                                                           "OmegaL"="OmegaL",
-                                                                                           "OmegaK"="OmegaK",
-                                                                                           "Growth Factor"="Factor",
-                                                                                           "Growth Rate"="Rate",
-                                                                                           "Universe Critical Mass Density"="RhoCrit"
-                         ),selected="CoVol"),
+                         selectInput(inputId="customYAxis", label="y Axis", choices = {l<-list();
+                                                                                       for(i in 1:length(lookUpTable)) {
+                                                                                           l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
+                                                                                        };l},
+                                                                            selected="CoVol"),
                          checkboxInput("customLogY", label = "Log y axis", value = FALSE)
                      ),
                      fluidRow(
@@ -136,6 +106,8 @@ shinyUI(fluidPage(
              ),
              br(),br(),br()
     ),
+    # The Survey Design tab #
+    #########################
     tabPanel("Survey Design",
              sidebarLayout(
                  sidebarPanel(
@@ -191,7 +163,8 @@ shinyUI(fluidPage(
              ),
              br(),br(),br()
     ),
-    ),
+    # The Info tab #
+    ################
     tabPanel("Info",
              h3("About"),
              p(span("Welcome to ICRAR's Cosmology Calculator!", style="color:#08c"),
@@ -249,6 +222,8 @@ shinyUI(fluidPage(
              br(),br(),br()
              
     ),
+    # The R Code tab #
+    ##################
     tabPanel("R Code",
              p("Basic cosmological distance calculator R code used server-side to generate outputs."),
              p("Written by Aaron Robotham (see", span("Info", style='color:#08c'), "tab for references)."),
