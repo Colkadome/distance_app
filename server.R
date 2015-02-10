@@ -33,12 +33,12 @@ shinyServer(function(input, output, clientData, session) {
             # get custom results
             r <- cosmapval(axisValue, axis$val, H0, OmegaM, OmegaL, zrange=c(0,100), res=12, iter=12, out='cos')
             updateTextInput(session, "calcz", value = r$z)
-            r <- merge(r, cosgrow(r$z, H0, OmegaM, OmegaL))
+            r <- cbind(r, cosgrow(r$z, H0, OmegaM, OmegaL))
         }
         else {
             # get normal results
             r <- cosdist(z, H0, OmegaM, OmegaL, age=TRUE)
-            r <- merge(r, cosgrow(z, H0, OmegaM, OmegaL))
+            r <- cbind(r, cosgrow(z, H0, OmegaM, OmegaL))
         }
         
         # unit conversion
