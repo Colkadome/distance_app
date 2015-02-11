@@ -25,7 +25,7 @@ shinyServer(function(input, output, clientData, session) {
         # if the custom field is filled, use the custom calculation
         if(nchar(isolate(input$custom_calcValue)) > 0) {
             # get the custom variable/value
-            axis <- lookUpTable[[input$custom_calcAxis]]
+            axis <- lookUpTable[[isolate(input$custom_calcAxis)]]
             axisValue <- as.numeric(isolate(input$custom_calcValue))
             # unit conversion
             if(axis$val=='RhoCrit'){axisValue=axisValue*1e10}
