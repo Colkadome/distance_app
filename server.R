@@ -37,7 +37,7 @@ shinyServer(function(input, output, clientData, session) {
         }
         else {
             # get normal results
-            r <- cosdist(z, H0, OmegaM, OmegaL, age=TRUE)
+            r <- cosdist(z, H0, OmegaM, OmegaL, age=T, error=T)
             r <- cbind(r, cosgrow(z, H0, OmegaM, OmegaL))
         }
         
@@ -64,7 +64,8 @@ shinyServer(function(input, output, clientData, session) {
         list(
             HTML("<h4>Results :</h4>"),
             HTML("<p>The redshift <b>z</b> is <span style='color:#08c;'>", signif(r$z,digits=sigF), "</span></p>"),
-            HTML("<p>The expansion factor <b>a</b> is <span style='color:#08c;'>", r$a, "</span></p>"),
+            HTML("<p>The expansion factor <b>a</b> is <span style='color:#08c;'>", signif(r$a,digits=sigF), "</span></p>"),
+            HTML("<p>The <b>Relative Error</b> is <span style='color:#08c;'>±", signif(r$RelError,digits=sigF), "</span></p>"),
             HTML("<br/>"),
             HTML("<h4>Distances :</h4>"),
             HTML("<p>The <b>", t$CoDist$label, "</b> to z is <span style='color:#08c;'>", signif(r$CoDist,digits=sigF), "</span> ", t$CoDist$unit_html,"</p>"),
