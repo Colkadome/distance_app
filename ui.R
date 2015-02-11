@@ -225,9 +225,15 @@ shinyUI(fluidPage(
              p("Basic cosmological distance calculator R code used server-side to generate outputs."),
              p("Written by Aaron Robotham (see", span("Info", style='color:#08c'), "tab for references)."),
              strong("cosdist"),
-             HTML("<pre class='prettyprint lang-r' style='padding:5px'>function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM, 
-    age = FALSE) 
+             HTML('<pre class="prettyprint lang-r" style="padding:5px">function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM, 
+    age = FALSE, error = FALSE) 
 {
+    if (!all(is.finite(z))) {
+        stop("All z must be finite and numeric")
+    }
+    if (!all(z >= 0)) {
+        stop("All z must be >=0")
+    }
     OmegaK = 1 - OmegaM - OmegaL
     Einv = function(z, OmegaM, OmegaL, OmegaK) {
         1/sqrt(OmegaM * (1 + z)^3 + OmegaK * (1 + z)^2 + OmegaL)
@@ -235,13 +241,22 @@ shinyUI(fluidPage(
     if (age) {
         Einvz = function(z, OmegaM, OmegaL, OmegaK) {
             1/(sqrt(OmegaM * (1 + z)^3 + OmegaK * (1 + z)^2 + 
-            OmegaL) * (1 + z))
+                OmegaL) * (1 + z))
         }
     }
     temp = function(z, H0, OmegaM, OmegaL, OmegaK) {
         HubDist = (299792.458/H0)
-        CoDist = HubDist * integrate(Einv, 0, z, OmegaM = OmegaM, 
-            OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000)$value
+        temp = integrate(Einv, 0, z, OmegaM = OmegaM, OmegaL = OmegaL, 
+            OmegaK = OmegaK, subdivisions = 1000L)
+        CoDist = HubDist * temp$value
+        if (error) {
+            if (z > 0) {
+                RelError = abs(temp$abs.error/temp$value)
+            }
+            else {
+                RelError = 0
+            }
+        }
         if (OmegaK == 0) {
             CoDistTran = CoDist
             CoVol = ((4/3) * pi * CoDist^3)/1e+09
@@ -272,26 +287,43 @@ shinyUI(fluidPage(
         if (age) {
             HT = (3.08568025e+19/(H0 * 31556926))/1e+09
             UniAge = HT * integrate(Einvz, 0, Inf, OmegaM = OmegaM, 
-                OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000)$value
+                OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000L)$value
             zAge = HT * integrate(Einvz, 0, z, OmegaM = OmegaM, 
-                OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000)$value
+                OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000L)$value
         }
-        if (age) {
-            return = c(z = z, a = a, CoDist = CoDist, LumDist = LumDist, 
-                AngDist = AngDist, CoDistTran = CoDistTran, DistMod = DistMod, 
-                AngSize = AngSize, CoVol = CoVol, HubTime = HT, 
-                UniAgeNow = UniAge, UniAgeAtz = UniAge - zAge, 
-                TravelTime = zAge)
+        if (error) {
+            if (age) {
+                return = c(z = z, a = a, CoDist = CoDist, LumDist = LumDist, 
+                    AngDist = AngDist, CoDistTran = CoDistTran, 
+                    DistMod = DistMod, AngSize = AngSize, CoVol = CoVol, 
+                    HubTime = HT, UniAgeNow = UniAge, UniAgeAtz = UniAge - 
+                    zAge, TravelTime = zAge, RelError = RelError)
+            }
+            else {
+                return = c(z = z, a = a, CoDist = CoDist, LumDist = LumDist, 
+                    AngDist = AngDist, CoDistTran = CoDistTran, 
+                    DistMod = DistMod, AngSize = AngSize, CoVol = CoVol, 
+                    RelError = RelError)
+            }
         }
         else {
-            return = c(z = z, a = a, CoDist = CoDist, LumDist = LumDist, 
-                AngDist = AngDist, CoDistTran = CoDistTran, DistMod = DistMod, 
-                AngSize = AngSize, CoVol = CoVol)
+            if (age) {
+                return = c(z = z, a = a, CoDist = CoDist, LumDist = LumDist, 
+                    AngDist = AngDist, CoDistTran = CoDistTran, 
+                    DistMod = DistMod, AngSize = AngSize, CoVol = CoVol, 
+                    HubTime = HT, UniAgeNow = UniAge, UniAgeAtz = UniAge - 
+                    zAge, TravelTime = zAge)
+            }
+            else {
+                return = c(z = z, a = a, CoDist = CoDist, LumDist = LumDist, 
+                    AngDist = AngDist, CoDistTran = CoDistTran, 
+                    DistMod = DistMod, AngSize = AngSize, CoVol = CoVol)
+            }
         }
     }
     return(as.data.frame(t(Vectorize(temp)(z = z, H0 = H0, OmegaM = OmegaM, 
         OmegaL = OmegaL, OmegaK = OmegaK))))
-}</pre>"
+}</pre>'
              ),
              strong("cosgrow"),
              HTML("<pre class='prettyprint lang-r' style='padding:5px'>function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM) 
