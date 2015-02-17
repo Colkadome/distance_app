@@ -70,13 +70,26 @@ shinyUI(fluidPage(
                                 textInput(inputId="plotEnd", label="z End", value="1")
                          )
                      ),
-                     textInput(inputId="plotRes", label="z Resolution", value="1000"),
-                     selectInput("plotAxis", label="x Axis", choices = {l <- list();
-                                                                        l[[lookUpTable[["z"]]$label]] <- lookUpTable[["z"]]$val;
-                                                                        l[[lookUpTable[["TravelTime"]]$label]] <- lookUpTable[["TravelTime"]]$val;
-                                                                        l;
-                     },selected="z"),
-                     checkboxInput("plotLogY", label = "Log y axis", value = FALSE),
+                     fluidRow(
+                         column(6,
+                                textInput(inputId="plotRes", label="z Resolution", value="100")
+                         ),
+                         column(6,
+                                selectInput("plotAxis", label="x Axis", choices = {l <- list();
+                                                                                   l[[lookUpTable[["z"]]$label]] <- lookUpTable[["z"]]$val;
+                                                                                   l[[lookUpTable[["TravelTime"]]$label]] <- lookUpTable[["TravelTime"]]$val;
+                                                                                   l;
+                                },selected="z")
+                         )
+                     ),
+                     fluidRow(
+                         column(6,
+                                checkboxInput("plotLogX", label = "Log x axis", value = FALSE)
+                         ),
+                         column(6,
+                                checkboxInput("plotLogY", label = "Log y axis", value = FALSE)
+                         )
+                     ),
                      h4("Custom Plot:"),
                      selectInput(inputId="customXAxis", label="x Axis", choices = {l<-list();
                                                                                    for(i in 1:length(lookUpTable)) {
@@ -87,11 +100,11 @@ shinyUI(fluidPage(
                      fluidRow(
                          column(6,
                                 checkboxInput("customLogX", label = "Log x axis", value = FALSE)
-                                ),
+                         ),
                          column(6,
                                 checkboxInput("customFlipX", label = "Flip x axis", value = FALSE)
-                                )
-                         ),
+                         )
+                     ),
                      selectInput(inputId="customYAxis", label="y Axis", choices = {l<-list();
                                                                                    for(i in 1:length(lookUpTable)) {
                                                                                        l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
@@ -180,7 +193,7 @@ shinyUI(fluidPage(
              h3("About"),
              p(span("Welcome to ICRAR's Cosmology Calculator!", style="color:#08c"),
                "This calculator was written by", strong("Joseph Dunne"), "and", strong("Aaron Robotham"), "in the programming language R, and uses the library Shiny to provide
-                   the interface."),
+               the interface."),
              br(),
              h4("Calculation", style='color:#08c'),
              p(
@@ -232,7 +245,7 @@ shinyUI(fluidPage(
              p(a("Wright E. L., 2006, PASP, 118, 1711", href="http://adsabs.harvard.edu/abs/2006PASP..118.1711W", target="_blank")),
              br(),br(),br()
              
-    ),
+             ),
     # The R Code tab #
     ##################
     tabPanel("R Code",
