@@ -84,7 +84,14 @@ shinyUI(fluidPage(
                                                                                            l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
                                                                                    };l},
                                  selected="TravelTime"),
-                     checkboxInput("customLogX", label = "Log x axis", value = FALSE),
+                     fluidRow(
+                         column(6,
+                                checkboxInput("customLogX", label = "Log x axis", value = FALSE)
+                                ),
+                         column(6,
+                                checkboxInput("customFlipX", label = "Flip x axis", value = FALSE)
+                                )
+                         ),
                      selectInput(inputId="customYAxis", label="y Axis", choices = {l<-list();
                                                                                    for(i in 1:length(lookUpTable)) {
                                                                                        l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val

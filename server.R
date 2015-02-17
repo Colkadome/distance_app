@@ -199,13 +199,27 @@ shinyServer(function(input, output, clientData, session) {
         yAxis <- lookUpTable[[input$customYAxis]]
         useLogX <- input$customLogX
         useLogY <- input$customLogY
+        flipX <- input$customFlipX
+        
+        # set range
+        xRange <- range(r[[xAxis$val]])
         
         # set the 'log' attribute in magplot
         log <- ''
-        if(useLogX)
+        if(useLogX) {
             log <- 'x'
-        if(useLogY)
+            if(xRange[1] <= 0) {
+                xRange <- xRange + 0.1
+            }
+        }
+        if(useLogY) {
             log <- paste0(log, 'y')
+        }
+        
+        # check if x axis flipped
+        if(input$customFlipX) {
+            xRange <- rev(xRange)
+        }
         
         # format xlab and ylab
         xlab_str <- paste0('"',xAxis$label,'"')
@@ -214,7 +228,7 @@ shinyServer(function(input, output, clientData, session) {
         if(nchar(yAxis$unit_r)>0) ylab_str <- paste0(ylab_str, "~", yAxis$unit_r)
         
         # plot results
-        magplot(x=r[[xAxis$val]], y=r[[yAxis$val]], main=paste0(yAxis$label, " vs ", xAxis$label),
+        magplot(x=r[[xAxis$val]], y=r[[yAxis$val]], xlim=xRange, main=paste0(yAxis$label, " vs ", xAxis$label),
                 xlab=parse(text=xlab_str), ylab=parse(text=ylab_str),type="l",
                 col='black',log=log)
     })
