@@ -245,7 +245,7 @@ shinyUI(fluidPage(
              p(a("Wright E. L., 2006, PASP, 118, 1711", href="http://adsabs.harvard.edu/abs/2006PASP..118.1711W", target="_blank")),
              br(),br(),br()
              
-             ),
+    ),
     # The R Code tab #
     ##################
     tabPanel("R Code",
