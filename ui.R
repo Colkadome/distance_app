@@ -33,7 +33,7 @@ shinyUI(fluidPage(
                                  h4("Custom Calc:"),
                                  selectInput(inputId="custom_calcAxis", label="Variable", choices = {l<-list();
                                                                                                      for(i in 1:length(lookUpTable)) {
-                                                                                                         if(lookUpTable[[i]]$val != 'z' && lookUpTable[[i]]$val != 'AngSize' && lookUpTable[[i]]$val != 'AngDist')
+                                                                                                         if(lookUpTable[[i]]$val != 'z' && lookUpTable[[i]]$val != 'AngSize' && lookUpTable[[i]]$val != 'AngDist' && lookUpTable[[i]]$val != 'HubTime' && lookUpTable[[i]]$val != 'UniAgeNow')
                                                                                                              l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
                                                                                                      };l},
                                              selected="CoVol"),
@@ -93,7 +93,7 @@ shinyUI(fluidPage(
                      h4("Custom Plot:"),
                      selectInput(inputId="customXAxis", label="x Axis", choices = {l<-list();
                                                                                    for(i in 1:length(lookUpTable)) {
-                                                                                       if(lookUpTable[[i]]$val != 'AngDist' && lookUpTable[[i]]$val != 'AngSize')
+                                                                                       if(lookUpTable[[i]]$val != 'HubTime' && lookUpTable[[i]]$val != 'UniAgeNow')
                                                                                            l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
                                                                                    };l},
                                  selected="TravelTime"),
@@ -107,7 +107,8 @@ shinyUI(fluidPage(
                      ),
                      selectInput(inputId="customYAxis", label="y Axis", choices = {l<-list();
                                                                                    for(i in 1:length(lookUpTable)) {
-                                                                                       l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
+                                                                                       if(lookUpTable[[i]]$val != 'HubTime' && lookUpTable[[i]]$val != 'UniAgeNow')
+                                                                                           l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
                                                                                    };l},
                                  selected="CoVol"),
                      fluidRow(
