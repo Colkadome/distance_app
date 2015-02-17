@@ -162,17 +162,22 @@ shinyServer(function(input, output, clientData, session) {
         # get plot results + plot parameters
         r <- isolate(plotResult())
         xAxis <- lookUpTable[[input$plotAxis]]
-        useLog <- input$plotLogY
+        useLogX <- input$plotLogX
+        useLogY <- input$plotLogY
         
         # set the 'log' attribute in magplot
-        if(useLog) log <- 'y' else log <- ''
+        log <- ''
+        if(useLogX) {
+            log <- 'x'
+        }
+        if(useLogY) {
+            log <- paste0(log, 'y')
+        }
         
         # find the min and max distances to scale Y axis correctly
         all <- c(r$LumDist, r$CoDistTran, r$CoDist, r$AngDist)
-        ymin <- min(all)
+        ymin <- min(all[all>0])
         ymax <- max(all)
-        if(useLog && ymin <= 0) # Make sure logged y axis does not contain log(0)
-            ymin <- 1
         
         # format the x axis label
         xlab_str <- paste0('"',xAxis$label,'"')
@@ -224,7 +229,6 @@ shinyServer(function(input, output, clientData, session) {
         if(input$customFlipY) {
             yRange <- rev(yRange)
         }
-        
         # format xlab and ylab
         xlab_str <- paste0('"',xAxis$label,'"')
         if(nchar(xAxis$unit_r)>0) xlab_str <- paste0(xlab_str, "~", xAxis$unit_r)
