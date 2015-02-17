@@ -214,7 +214,7 @@ shinyServer(function(input, output, clientData, session) {
         }
         if(useLogY) {
             log <- paste0(log, 'y')
-            yRange <- range(r[[xAxis$val]][c(r[[xAxis$val]]>0)])
+            yRange <- range(r[[yAxis$val]][c(r[[yAxis$val]]>0)])
         }
         
         # check if axes flipped
