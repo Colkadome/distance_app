@@ -97,7 +97,14 @@ shinyUI(fluidPage(
                                                                                        l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
                                                                                    };l},
                                  selected="CoVol"),
-                     checkboxInput("customLogY", label = "Log y axis", value = FALSE),
+                     fluidRow(
+                         column(6,
+                                checkboxInput("customLogY", label = "Log y axis", value = FALSE)
+                         ),
+                         column(6,
+                                checkboxInput("customFlipY", label = "Flip y axis", value = FALSE)
+                         )
+                     ),
                      h4("Save Data:"),
                      downloadButton("saveData_txt",label="Download as .txt"),
                      downloadButton("saveData_csv",label="Download as .csv")
