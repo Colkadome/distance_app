@@ -30,6 +30,7 @@ shinyUI(fluidPage(
                                             textInput(inputId="calcOmegaL", label="OmegaL", value="1-OmegaM")
                                      )
                                  ),
+                                 selectInput(inputId="calcDefaults", label="Default Parameters", choices = names(defaultParams)),
                                  h4("Custom Calc:"),
                                  selectInput(inputId="custom_calcAxis", label="Variable", choices = {l<-list();
                                                                                                      for(i in 1:length(lookUpTable)) {

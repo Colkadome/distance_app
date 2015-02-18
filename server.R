@@ -15,12 +15,7 @@ shinyServer(function(input, output, clientData, session) {
         z <- isolate(as.numeric(input$calcz))
         H0 <- isolate(as.numeric(input$calcH0))
         OmegaM <- isolate(as.numeric(input$calcOmegaM))
-        if(gsub(" ", "", tolower(isolate(input$calcOmegaL)), fixed = TRUE)=="1-omegam") {
-            OmegaL <- 1 - OmegaM
-        }
-        else {
-            OmegaL <- as.numeric(isolate(input$calcOmegaL))
-        }
+        OmegaL <- getOmegaL(OmegaM, isolate(input$calcOmegaL))
         
         # if the custom field is filled, use the custom calculation
         if(nchar(isolate(input$custom_calcValue)) > 0) {
@@ -112,6 +107,44 @@ shinyServer(function(input, output, clientData, session) {
         }
     })
     
+    # The custom calc defaults #
+    ############################
+    typeOrSelect <- reactiveValues(last = "none")
+    observe({
+        input$calcDefaults
+        typeOrSelect$last <- "select"
+    })
+    observe({
+        input$H0
+        input$calcOmegaM
+        input$calcOmegaL
+        typeOrSelect$last <- "type"
+    })
+    observe ({
+        action <- typeOrSelect$last
+        if(action == "select") {
+            selected <- isolate(input$calcDefaults)
+            updateTextInput(session, "calcH0", value = defaultParams[[selected]]$H0)
+            updateTextInput(session, "calcOmegaM", value = defaultParams[[selected]]$OmegaM)
+            updateTextInput(session, "calcOmegaL", value = defaultParams[[selected]]$OmegaL)
+        }
+        else if(action == "type") {
+            updateSelectInput(session, "calcDefaults", selected = "Custom")
+        }
+    })
+    
+    # Function to get OmegaL #
+    ###########################
+    getOmegaL <- function(OmegaM, OmegaL_string) {
+        if(gsub(" ", "", tolower(OmegaL_string), fixed = TRUE)=="1-omegam") {
+            OmegaL <- 1 - OmegaM
+        }
+        else {
+            OmegaL <- as.numeric(OmegaL_string)
+        }
+        return (OmegaL)
+    }
+    
     # The calculated plot result #
     ##############################
     plotResult <- reactive({
@@ -119,12 +152,7 @@ shinyServer(function(input, output, clientData, session) {
         # get variables from inputs
         H0 <- as.numeric(input$plotH0)
         OmegaM <- as.numeric(input$plotOmegaM)
-        if(gsub(" ", "", tolower(input$plotOmegaL), fixed = TRUE)=="1-omegam") {
-            OmegaL <- 1 - OmegaM
-        }
-        else {
-            OmegaL <- as.numeric(input$plotOmegaL)
-        }
+        OmegaL <- getOmegaL(OmegaM, input$plotOmegaL)
         
         # get the z points using input
         start <- as.numeric(input$plotStart)
