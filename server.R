@@ -4,6 +4,18 @@ source("table.R")
 
 shinyServer(function(input, output, clientData, session) {
     
+    # Helper Function to get OmegaL #
+    #################################
+    getOmegaL <- function(OmegaM, OmegaL_string) {
+        if(gsub(" ", "", tolower(OmegaL_string), fixed = TRUE)=="1-omegam") {
+            OmegaL <- 1 - OmegaM
+        }
+        else {
+            OmegaL <- as.numeric(OmegaL_string)
+        }
+        return (OmegaL)
+    }
+    
     # The Cosmo Calc #
     ##################
     calcResult <- reactive ({
@@ -109,41 +121,52 @@ shinyServer(function(input, output, clientData, session) {
     
     # The custom calc defaults #
     ############################
-    typeOrSelect <- reactiveValues(last = "none")
+    
+    lastAction <- reactiveValues(last = "none")
+    
+    # Changes selection field based on text
     observe({
-        input$calcDefaults
-        typeOrSelect$last <- "select"
+        H0 <- as.numeric(input$calcH0)
+        OmegaM <- as.numeric(input$calcOmegaM)
+        OmegaL <- getOmegaL(OmegaM, input$calcOmegaL)
+        
+        # if the text entry is by the user, check if it matches any of the default values.
+        if(isolate(lastAction$last) != "updateText") {
+            if(is.na(H0) || is.na(OmegaM) || is.na(OmegaL)) {
+                updateSelectInput(session, "calcDefaults", selected = "Custom")
+                return()
+            }
+            for(n in names(defaultParams)) {
+                if(n != "Custom") {
+                    l <- defaultParams[[n]]
+                    if(H0 == l$H0 && OmegaM == l$OmegaM && OmegaL == l$OmegaL) {
+                        lastAction$last <- "updateSelect"
+                        updateSelectInput(session, "calcDefaults", selected = n)
+                        return()
+                    }
+                }
+            }
+            updateSelectInput(session, "calcDefaults", selected = "Custom")
+        }
+        else {
+            lastAction$last <- "none"
+        }
     })
-    observe({
-        input$H0
-        input$calcOmegaM
-        input$calcOmegaL
-        typeOrSelect$last <- "type"
-    })
+    
+    # Changes text based on selection filed
     observe ({
-        action <- typeOrSelect$last
-        if(action == "select") {
-            selected <- isolate(input$calcDefaults)
+        selected <- input$calcDefaults
+        # if the selection is by the user, update the text input fields
+        if(selected != "Custom" && isolate(lastAction$last) != "updateSelect") {
+            lastAction$last <- "updateText"
             updateTextInput(session, "calcH0", value = defaultParams[[selected]]$H0)
             updateTextInput(session, "calcOmegaM", value = defaultParams[[selected]]$OmegaM)
             updateTextInput(session, "calcOmegaL", value = defaultParams[[selected]]$OmegaL)
         }
-        else if(action == "type") {
-            updateSelectInput(session, "calcDefaults", selected = "Custom")
+        else {
+            lastAction$last <- "none"
         }
     })
-    
-    # Function to get OmegaL #
-    ###########################
-    getOmegaL <- function(OmegaM, OmegaL_string) {
-        if(gsub(" ", "", tolower(OmegaL_string), fixed = TRUE)=="1-omegam") {
-            OmegaL <- 1 - OmegaM
-        }
-        else {
-            OmegaL <- as.numeric(OmegaL_string)
-        }
-        return (OmegaL)
-    }
     
     # The calculated plot result #
     ##############################

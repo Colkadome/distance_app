@@ -24,7 +24,7 @@ defaultParams <- list(
     "737"=list(
         "H0"=70.0,
         "OmegaM"=0.30,
-        "OmegaL"="1-OmegaM"),
+        "OmegaL"=0.70),
     "PLANCK"=list(
         "H0"=70.4,
         "OmegaM"=0.3115,
