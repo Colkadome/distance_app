@@ -200,7 +200,7 @@ shinyServer(function(input, output, clientData, session) {
     )
     output$saveData_csv <- downloadHandler(
         filename = function() { paste("plot", "csv", sep=".") },
-        content = function(file) { write.table(plotResult(), file, sep=", ", row.names=FALSE) }
+        content = function(file) { write.table(plotResult(), file, sep=",", row.names=FALSE) }
     )
     
     # Distance Plot Output #

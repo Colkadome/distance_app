@@ -204,7 +204,7 @@ shinyUI(fluidPage(
              p(
                  "To use this tab, fill in the variables under", strong("Set Variables"), "and click the", actionButton(inputId="dud", label="Calculate", icon("random")),
                  "button to calculate variables at a certain redshift. Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
-                 "for all calculations."
+                 "for all calculations. The", strong("Default Parameters"), "box lets you set the variables (H0, OmegaM and OmegaL) to a known setting."
              ),
              p(
                  "Under", strong("Custom Calc,"), "the calculation may be done using a chosen variable from the", span("Variable", style="text-decoration:underline;"), "menu.",
