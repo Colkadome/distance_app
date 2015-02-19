@@ -215,7 +215,7 @@ shinyUI(fluidPage(
                  "To use this tab, fill in the variables under", strong("Set Variables"), "and click the", actionButton(inputId="dud", label="Calculate", icon("random")),
                  "button to calculate variables at a certain redshift. Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
                  "for all calculations.",
-                 "The", strong("Default Parameters"), "box lets you set the variables (H0, OmegaM and OmegaL) to a known setting."
+                 "The", strong("Default Parameters"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP)."
              ),
              p(
                  "Under", strong("Custom Calc,"), "the calculation may be done using a chosen variable from the", span("Variable", style="text-decoration:underline;"), "menu.",
@@ -233,7 +233,7 @@ shinyUI(fluidPage(
                  "The first plot is a distance plot, and the second plot is a custom plot which may be modified using the options under", strong("Custom Plot."),
                  "Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
                  "for all calculations.",
-                 "The", strong("Default Parameters"), "box lets you set the variables (H0, OmegaM and OmegaL) to a known setting.",
+                 "The", strong("Default Parameters"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP).",
                  "Some of the plot options are as follows:"
              ),
              p(strong("z Start"), "- The starting redshift for the plots."),
@@ -250,7 +250,7 @@ shinyUI(fluidPage(
              p(
                  "To use this tab, fill in the variables under", strong("Set Variables"), "and click the", actionButton(inputId="dud", label="Calculate", icon("random")),
                  "button to calculate the Comoving Volume.",
-                 "The", strong("Default Parameters"), "box lets you set the variables (H0, OmegaM and OmegaL) to a known setting.",
+                 "The", strong("Default Parameters"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP).",
                  "If the area is unknown, an extra option under", strong("Find Area (optional)"), "can be used the find the area of the sky given the latitude and longitude.",
                  "The Area field is then updated by clicking the", actionButton(inputId="dud", icon("arrow-up")), "button."
              ),
