@@ -2,9 +2,21 @@ source("table.R")
 shinyUI(fluidPage(
     
     tags$head(
+        tags$title("Cosmology Calculator"),
+        tags$link(rel="shortcut icon", href="URL_HERE"),
+        tags$style(HTML("
+
+                        ")),
         tags$script(src = "google-code-prettify/run_prettify.js")
     ),
-    titlePanel(title="Cosmology Calculator"),
+
+    # title #
+    #########
+
+    fluidRow(
+        h1("Cosmology Calculator", style="vertical-align:middle;color:white;margin:30px;"),
+        style = "margin-bottom:10px;background: #000 url('space.gif') repeat 0 0;"
+    ),
     
     # The Calculation tab #
     #######################
@@ -50,8 +62,7 @@ shinyUI(fluidPage(
                              mainPanel(
                                  uiOutput("calcOut")
                              )
-                         ),
-                         br(),br(),br()
+                         )
     ),
     # The Plot tab #
     ################
@@ -142,8 +153,7 @@ shinyUI(fluidPage(
                      plotOutput("plotDistOut"),
                      plotOutput("customPlotOut")
                  )
-             ),
-             br(),br(),br()
+             )
     ),
     # The Survey Design tab #
     #########################
@@ -220,12 +230,12 @@ shinyUI(fluidPage(
                      h4("Result:"),
                      uiOutput("sky_out")
                  ) 
-             ),
-             br(),br(),br()
+             )
     ),
     # The Info tab #
     ################
     tabPanel("Info",
+             div(
              h3("About"),
              p(span("Welcome to ICRAR's Cosmology Calculator!", style="color:#08c"),
                "This calculator was written by", strong("Joseph Dunne"), "and", strong("Aaron Robotham"), "in the programming language R, and uses the library Shiny to provide
@@ -284,9 +294,8 @@ shinyUI(fluidPage(
              p(a("Hamilton A. J. S., 2001, MNRAS 322 419", href="http://adsabs.harvard.edu/abs/2001MNRAS.322..419H", target="_blank")),
              p(a("Hogg D. W., et al., 1999 (arXiv 9905116)", href="http://arxiv.org/abs/astro-ph/9905116", target="_blank")),
              p(a("Lahav O., et al., 1991, MNRAS, 251, 136", href="http://adsabs.harvard.edu/abs/1991MNRAS.251..128L", target="_blank")),
-             p(a("Wright E. L., 2006, PASP, 118, 1711", href="http://adsabs.harvard.edu/abs/2006PASP..118.1711W", target="_blank")),
-             br(),br(),br()
-             
+             p(a("Wright E. L., 2006, PASP, 118, 1711", href="http://adsabs.harvard.edu/abs/2006PASP..118.1711W", target="_blank"))
+             , class="container-fluid")
     ),
     # The R Code tab #
     ##################
@@ -437,5 +446,10 @@ shinyUI(fluidPage(
 }</pre>'
              )
     )
+    ),
+    br(),
+    div(
+        span(a("ICRAR", href="http://www.icrar.org/", target="_blank"), "2015, written by Joseph Dunne, Aaron Robotham", style="color:grey;font-size:12px;"),
+        style="text-align:center;margin-bottom:3px;"
     )
 ))
