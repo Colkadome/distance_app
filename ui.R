@@ -3,10 +3,10 @@ shinyUI(fluidPage(
     
     tags$head(
         tags$title("Cosmology Calculator"),
-        tags$link(rel="shortcut icon", href="URL_HERE"),
-        tags$style(HTML("
-
-                        ")),
+        tags$link(rel="shortcut icon", href="favicon.ico"),
+#         tags$style(HTML("
+# 
+#                         ")),
         tags$script(src = "google-code-prettify/run_prettify.js")
     ),
 
