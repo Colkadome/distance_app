@@ -78,8 +78,8 @@ shinyUI(fluidPage(
                          ),
                          column(6,
                                 selectInput("plotAxis", label="x Axis", choices = {l <- list();
-                                                                                   l[[lookUpTable[["z"]]$label]] <- lookUpTable[["z"]]$val;
-                                                                                   l[[lookUpTable[["TravelTime"]]$label]] <- lookUpTable[["TravelTime"]]$val;
+                                                                                   l[[lookUpTable$z$label]] <- lookUpTable$z$val;
+                                                                                   l[[lookUpTable$TravelTime$label]] <- lookUpTable$TravelTime$val;
                                                                                    l;
                                 },selected="z")
                          )
