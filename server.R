@@ -122,7 +122,7 @@ shinyServer(function(input, output, clientData, session) {
     # The custom calc defaults #
     ############################
     
-    lastAction <- reactiveValues(last = "none")
+    calcLastAction <- reactiveValues(last = "none")
     
     # Changes selection field based on text
     observe({
@@ -131,7 +131,7 @@ shinyServer(function(input, output, clientData, session) {
         OmegaL <- getOmegaL(OmegaM, input$calcOmegaL)
         
         # if the text entry is by the user, check if it matches any of the default values.
-        if(isolate(lastAction$last) != "updateText") {
+        if(isolate(calcLastAction$last) != "updateText") {
             if(is.na(H0) || is.na(OmegaM) || is.na(OmegaL)) {
                 updateSelectInput(session, "calcDefaults", selected = "Custom")
                 return()
@@ -140,7 +140,7 @@ shinyServer(function(input, output, clientData, session) {
                 if(n != "Custom") {
                     l <- defaultParams[[n]]
                     if(H0 == l$H0 && OmegaM == l$OmegaM && OmegaL == l$OmegaL) {
-                        lastAction$last <- "updateSelect"
+                        calcLastAction$last <- "updateSelect"
                         updateSelectInput(session, "calcDefaults", selected = n)
                         return()
                     }
@@ -149,7 +149,7 @@ shinyServer(function(input, output, clientData, session) {
             updateSelectInput(session, "calcDefaults", selected = "Custom")
         }
         else {
-            lastAction$last <- "none"
+            calcLastAction$last <- "none"
         }
     })
     
@@ -157,14 +157,14 @@ shinyServer(function(input, output, clientData, session) {
     observe ({
         selected <- input$calcDefaults
         # if the selection is by the user, update the text input fields
-        if(selected != "Custom" && isolate(lastAction$last) != "updateSelect") {
-            lastAction$last <- "updateText"
+        if(selected != "Custom" && isolate(calcLastAction$last) != "updateSelect") {
+            calcLastAction$last <- "updateText"
             updateTextInput(session, "calcH0", value = defaultParams[[selected]]$H0)
             updateTextInput(session, "calcOmegaM", value = defaultParams[[selected]]$OmegaM)
             updateTextInput(session, "calcOmegaL", value = defaultParams[[selected]]$OmegaL)
         }
         else {
-            lastAction$last <- "none"
+            calcLastAction$last <- "none"
         }
     })
     
@@ -291,6 +291,55 @@ shinyServer(function(input, output, clientData, session) {
                 main=paste0(yAxis$label, " vs ", xAxis$label),
                 xlab=parse(text=xlab_str), ylab=parse(text=ylab_str),type="l",
                 col='black',log=log)
+    })
+    
+    # The plot defaults #
+    #####################
+    
+    plotLastAction <- reactiveValues(last = "none")
+    
+    # Changes selection field based on text
+    observe({
+        H0 <- as.numeric(input$plotH0)
+        OmegaM <- as.numeric(input$plotOmegaM)
+        OmegaL <- getOmegaL(OmegaM, input$plotOmegaL)
+        
+        # if the text entry is by the user, check if it matches any of the default values.
+        if(isolate(plotLastAction$last) != "updateText") {
+            if(is.na(H0) || is.na(OmegaM) || is.na(OmegaL)) {
+                updateSelectInput(session, "plotDefaults", selected = "Custom")
+                return()
+            }
+            for(n in names(defaultParams)) {
+                if(n != "Custom") {
+                    l <- defaultParams[[n]]
+                    if(H0 == l$H0 && OmegaM == l$OmegaM && OmegaL == l$OmegaL) {
+                        plotLastAction$last <- "updateSelect"
+                        updateSelectInput(session, "plotDefaults", selected = n)
+                        return()
+                    }
+                }
+            }
+            updateSelectInput(session, "plotDefaults", selected = "Custom")
+        }
+        else {
+            plotLastAction$last <- "none"
+        }
+    })
+    
+    # Changes text based on selection filed
+    observe ({
+        selected <- input$plotDefaults
+        # if the selection is by the user, update the text input fields
+        if(selected != "Custom" && isolate(plotLastAction$last) != "updateSelect") {
+            plotLastAction$last <- "updateText"
+            updateTextInput(session, "plotH0", value = defaultParams[[selected]]$H0)
+            updateTextInput(session, "plotOmegaM", value = defaultParams[[selected]]$OmegaM)
+            updateTextInput(session, "plotOmegaL", value = defaultParams[[selected]]$OmegaL)
+        }
+        else {
+            plotLastAction$last <- "none"
+        }
     })
     
     # Survey Design "Find Area (optional)" section #

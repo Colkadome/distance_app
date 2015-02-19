@@ -53,13 +53,14 @@ shinyUI(fluidPage(
                  sidebarPanel(
                      actionButton(inputId="submitPlot", label="Plot", icon("random")),
                      h4("Set Variables:"),
-                     textInput(inputId="plotH0", label="H0", value="70.0"),
                      fluidRow(
                          column(6,
+                                textInput(inputId="plotH0", label="H0", value="70.0"),
                                 textInput(inputId="plotOmegaM", label="OmegaM", value="0.3")
                          ),
                          column(6,
-                                textInput(inputId="plotOmegaL", label="OmegaL", value="1-OmegaM")
+                                textInput(inputId="plotOmegaL", label="OmegaL", value="1-OmegaM"),
+                                selectInput(inputId="plotDefaults", label="Default Parameters", choices = names(defaultParams))
                          )
                      ),
                      h4("Plot Options:"),
