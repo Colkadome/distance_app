@@ -24,12 +24,18 @@ shinyUI(fluidPage(
                                  tags$hr(),
                                  fluidRow(
                                      column(6,
-                                            textInput(inputId="calcH0", label="H0", value="70.0"),
+                                            selectInput(inputId="calcDefaults", label="Reference Set", choices = names(defaultParams))
+                                     ),
+                                     column(6,
+                                            textInput(inputId="calcH0", label="H0", value="70.0")
+                                     )
+                                 ),
+                                 fluidRow(
+                                     column(6,
                                             textInput(inputId="calcOmegaM", label="OmegaM", value="0.3")
                                      ),
                                      column(6,
-                                            textInput(inputId="calcOmegaL", label="OmegaL", value="1-OmegaM"),
-                                            selectInput(inputId="calcDefaults", label="Default Parameters", choices = names(defaultParams))
+                                            textInput(inputId="calcOmegaL", label="OmegaL", value="1-OmegaM")
                                      )
                                  ),
                                  h4("Custom Calc:"),
@@ -56,12 +62,18 @@ shinyUI(fluidPage(
                      h4("Set Variables:"),
                      fluidRow(
                          column(6,
-                                textInput(inputId="plotH0", label="H0", value="70.0"),
+                                selectInput(inputId="plotDefaults", label="Reference Set", choices = names(defaultParams))
+                         ),
+                         column(6,
+                                textInput(inputId="plotH0", label="H0", value="70.0")
+                         )
+                     ),
+                     fluidRow(
+                         column(6,
                                 textInput(inputId="plotOmegaM", label="OmegaM", value="0.3")
                          ),
                          column(6,
-                                textInput(inputId="plotOmegaL", label="OmegaL", value="1-OmegaM"),
-                                selectInput(inputId="plotDefaults", label="Default Parameters", choices = names(defaultParams))
+                                textInput(inputId="plotOmegaL", label="OmegaL", value="1-OmegaM")
                          )
                      ),
                      h4("Plot Options:"),
@@ -170,12 +182,18 @@ shinyUI(fluidPage(
                      tags$hr(),
                      fluidRow(
                          column(6,
-                                textInput(inputId="sky_H0", label="H0", value="70.0"),
+                                selectInput(inputId="sky_Defaults", label="Reference Set", choices = names(defaultParams))
+                         ),
+                         column(6,
+                                textInput(inputId="sky_H0", label="H0", value="70.0")
+                         )
+                     ),
+                     fluidRow(
+                         column(6,
                                 textInput(inputId="sky_OmegaM", label="OmegaM", value="0.3")
                          ),
                          column(6,
-                                textInput(inputId="sky_OmegaL", label="OmegaL", value="1-OmegaM"),
-                                selectInput(inputId="sky_Defaults", label="Default Parameters", choices = names(defaultParams))
+                                textInput(inputId="sky_OmegaL", label="OmegaL", value="1-OmegaM")
                          )
                      ),
                      h4("Find Area (optional):"),
@@ -183,12 +201,18 @@ shinyUI(fluidPage(
                      br(), br(),
                      fluidRow(
                          column(6,
-                                textInput(inputId="sky_long1", label="Longitude 1 (deg)", value="129"),
                                 textInput(inputId="sky_lat1", label="Latitude 1 (deg)", value="-2")
                          ),
                          column(6,
-                                textInput(inputId="sky_long2", label="Longitude 2 (deg)", value="141"),
                                 textInput(inputId="sky_lat2", label="Latitude 2 (deg)", value="3")
+                         )
+                     ),
+                     fluidRow(
+                         column(6,
+                                textInput(inputId="sky_long1", label="Longitude 1 (deg)", value="129")
+                         ),
+                         column(6,
+                                textInput(inputId="sky_long2", label="Longitude 2 (deg)", value="141")
                          )
                      )
                  ),
@@ -215,12 +239,13 @@ shinyUI(fluidPage(
                  "To use this tab, fill in the variables under", strong("Set Variables"), "and click the", actionButton(inputId="dud", label="Calculate", icon("random")),
                  "button to calculate variables at a certain redshift. Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
                  "for all calculations.",
-                 "The", strong("Default Parameters"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP)."
+                 "The", strong("Reference Set"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP)."
              ),
              p(
                  "Under", strong("Custom Calc,"), "the calculation may be done using a chosen variable from the", span("Variable", style="text-decoration:underline;"), "menu.",
                  "When the", span("Value", style="text-decoration:underline;"), "box contains a value, the custom calculation will be used next time the", actionButton(inputId="dud", label="Calculate", icon("random")),
-                 "button is clicked."
+                 "button is clicked.",
+                 "Mappings are not availabe for AngDist (angular diameter distance) or AngSize (physical projected size) because the solutions are ambiguous."
              ),
              br(),
              h4("Plot", style='color:#08c'),
@@ -233,7 +258,7 @@ shinyUI(fluidPage(
                  "The first plot is a distance plot, and the second plot is a custom plot which may be modified using the options under", strong("Custom Plot."),
                  "Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
                  "for all calculations.",
-                 "The", strong("Default Parameters"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP).",
+                 "The", strong("Reference Set"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP).",
                  "Some of the plot options are as follows:"
              ),
              p(strong("z Start"), "- The starting redshift for the plots."),
@@ -250,7 +275,7 @@ shinyUI(fluidPage(
              p(
                  "To use this tab, fill in the variables under", strong("Set Variables"), "and click the", actionButton(inputId="dud", label="Calculate", icon("random")),
                  "button to calculate the Comoving Volume.",
-                 "The", strong("Default Parameters"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP).",
+                 "The", strong("Reference Set"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP).",
                  "If the area is unknown, an extra option under", strong("Find Area (optional)"), "can be used the find the area of the sky given the latitude and longitude.",
                  "The Area field is then updated by clicking the", actionButton(inputId="dud", icon("arrow-up")), "button."
              ),

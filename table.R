@@ -2,10 +2,10 @@ lookUpTable <- list("z"=list("label"="z", "unit_r"="", "unit_html"="", "val"="z"
                     "a"=list("label"="a", "unit_r"="", "unit_html"="", "val"="a"),
                     "CoDist"=list("label"="Comoving Radial Distance LoS", "unit_r"="(Mpc)", "unit_html"="(Mpc)", "val"="CoDist"),
                     "LumDist"=list("label"="Luminosity Distance", "unit_r"="(Mpc)", "unit_html"="(Mpc)", "val"="LumDist"),
-                    "AngDist"=list("label"="Angular Size Distance", "unit_r"="(Mpc)", "unit_html"="(Mpc)", "val"="AngDist"),
+                    "AngDist"=list("label"="Angular Diameter Distance", "unit_r"="(Mpc)", "unit_html"="(Mpc)", "val"="AngDist"),
                     "CoDistTran"=list("label"="Comoving Radial Distance Tran", "unit_r"="(Mpc)", "unit_html"="(Mpc)", "val"="CoDistTran"),
                     "DistMod"=list("label"="Distance Modulus", "unit_r"="(mag)", "unit_html"="(mag)", "val"="DistMod"),
-                    "AngSize"=list("label"="Angular Size", "unit_r"="(kpc/arcsec)", "unit_html"="(kpc/arcsec)", "val"="AngSize"),
+                    "AngSize"=list("label"="Physical Angular Size", "unit_r"="(kpc/arcsec)", "unit_html"="(kpc/arcsec)", "val"="AngSize"),
                     "CoVol"=list("label"="Comoving Volume", "unit_r"="(Gpc^{3})", "unit_html"="(Gpc<sup>3</sup>)", "val"="CoVol"),
                     "HubTime"=list("label"="Hubble Time", "unit_r"="(Gyr)", "unit_html"="(Gyr)", "val"="HubTime"),
                     "UniAgeNow"=list("label"="Universe Age Now", "unit_r"="(Gyr)", "unit_html"="(Gyr)", "val"="UniAgeNow"),
@@ -25,10 +25,10 @@ defaultParams <- list(
         "H0"=70.0,
         "OmegaM"=0.30,
         "OmegaL"=0.70),
-    "PLANCK"=list(
+    "PLANCK 2013"=list(
         "H0"=70.4,
-        "OmegaM"=0.3115,
-        "OmegaL"=0.728),
+        "OmegaM"=0.3175,
+        "OmegaL"=0.6825),
     "WMAP9"=list(
         "H0"=69.7,
         "OmegaM"=0.2821,
