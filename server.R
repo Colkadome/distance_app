@@ -415,4 +415,53 @@ shinyServer(function(input, output, clientData, session) {
         HTML("<p>The <b>Comoving Volume</b> is <span style='color:#08c;'>", signif(s,digits=sigF), "</span> (Gpc<sup>3</sup>)</p>")
     })
     
+    # Survey Design defaults #
+    ##########################
+    
+    sky_LastAction <- reactiveValues(last = "none")
+    
+    # Changes selection field based on text
+    observe({
+        H0 <- as.numeric(input$sky_H0)
+        OmegaM <- as.numeric(input$sky_OmegaM)
+        OmegaL <- getOmegaL(OmegaM, input$sky_OmegaL)
+        
+        # if the text entry is by the user, check if it matches any of the default values.
+        if(isolate(sky_LastAction$last) != "updateText") {
+            if(is.na(H0) || is.na(OmegaM) || is.na(OmegaL)) {
+                updateSelectInput(session, "sky_Defaults", selected = "Custom")
+                return()
+            }
+            for(n in names(defaultParams)) {
+                if(n != "Custom") {
+                    l <- defaultParams[[n]]
+                    if(H0 == l$H0 && OmegaM == l$OmegaM && OmegaL == l$OmegaL) {
+                        sky_LastAction$last <- "updateSelect"
+                        updateSelectInput(session, "sky_Defaults", selected = n)
+                        return()
+                    }
+                }
+            }
+            updateSelectInput(session, "sky_Defaults", selected = "Custom")
+        }
+        else {
+            sky_LastAction$last <- "none"
+        }
+    })
+    
+    # Changes text based on selection filed
+    observe ({
+        selected <- input$sky_Defaults
+        # if the selection is by the user, update the text input fields
+        if(selected != "Custom" && isolate(sky_LastAction$last) != "updateSelect") {
+            sky_LastAction$last <- "updateText"
+            updateTextInput(session, "sky_H0", value = defaultParams[[selected]]$H0)
+            updateTextInput(session, "sky_OmegaM", value = defaultParams[[selected]]$OmegaM)
+            updateTextInput(session, "sky_OmegaL", value = defaultParams[[selected]]$OmegaL)
+        }
+        else {
+            sky_LastAction$last <- "none"
+        }
+    })
+    
 })

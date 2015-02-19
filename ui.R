@@ -11,34 +11,35 @@ shinyUI(fluidPage(
     tabsetPanel(tabPanel("Calculation",
                          sidebarLayout(
                              sidebarPanel(
-                                 fluidRow(
-                                     column(6,
-                                            actionButton(inputId="submitCalc", label=span("Calculate"), icon("random"))
-                                     ),
-                                     column(6,
-                                            numericInput("calcSigFigs",label="Sig Figs",value=6,min=1,max=15)
-                                     )
-                                 ),
+                                 actionButton(inputId="submitCalc", label=span("Calculate"), icon("random")),
                                  h4("Set Variables:"),
                                  fluidRow(
                                      column(6,
-                                            textInput(inputId="calcz", label="z", value="1"),
+                                            textInput(inputId="calcz", label="z", value="1")
+                                            ),
+                                     column(6,
+                                            numericInput("calcSigFigs",label="Sig Figs",value=6,min=1,max=15)
+                                            )
+                                     ),
+                                 tags$hr(),
+                                 fluidRow(
+                                     column(6,
+                                            textInput(inputId="calcH0", label="H0", value="70.0"),
                                             textInput(inputId="calcOmegaM", label="OmegaM", value="0.3")
                                      ),
                                      column(6,
-                                            textInput(inputId="calcH0", label="H0", value="70.0"),
-                                            textInput(inputId="calcOmegaL", label="OmegaL", value="1-OmegaM")
+                                            textInput(inputId="calcOmegaL", label="OmegaL", value="1-OmegaM"),
+                                            selectInput(inputId="calcDefaults", label="Default Parameters", choices = names(defaultParams))
                                      )
                                  ),
-                                 selectInput(inputId="calcDefaults", label="Default Parameters", choices = names(defaultParams)),
                                  h4("Custom Calc:"),
+                                 textInput(inputId="custom_calcValue", label=uiOutput("custom_calcUnit"), value=""),
                                  selectInput(inputId="custom_calcAxis", label="Variable", choices = {l<-list();
                                                                                                      for(i in 1:length(lookUpTable)) {
                                                                                                          if(lookUpTable[[i]]$val != 'z' && lookUpTable[[i]]$val != 'AngSize' && lookUpTable[[i]]$val != 'AngDist' && lookUpTable[[i]]$val != 'HubTime' && lookUpTable[[i]]$val != 'UniAgeNow')
                                                                                                              l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
                                                                                                      };l},
-                                             selected="CoVol"),
-                                 textInput(inputId="custom_calcValue", label=uiOutput("custom_calcUnit"), value="")
+                                             selected="CoVol")
                              ),
                              mainPanel(
                                  uiOutput("calcOut")
@@ -158,15 +159,23 @@ shinyUI(fluidPage(
                                 ),selected="deg2")
                          )
                      ),
-                     textInput(inputId="sky_H0", label="H0", value="70.0"),
                      fluidRow(
                          column(6,
-                                textInput(inputId="sky_OmegaM", label="OmegaM", value="0.3"),
                                 textInput(inputId="sky_minz", label="min z", value="0")
                          ),
                          column(6,
-                                textInput(inputId="sky_OmegaL", label="OmegaL", value="1-OmegaM"),
                                 textInput(inputId="sky_maxz", label="max z", value="0.5")
+                         )
+                     ),
+                     tags$hr(),
+                     fluidRow(
+                         column(6,
+                                textInput(inputId="sky_H0", label="H0", value="70.0"),
+                                textInput(inputId="sky_OmegaM", label="OmegaM", value="0.3")
+                         ),
+                         column(6,
+                                textInput(inputId="sky_OmegaL", label="OmegaL", value="1-OmegaM"),
+                                selectInput(inputId="sky_Defaults", label="Default Parameters", choices = names(defaultParams))
                          )
                      ),
                      h4("Find Area (optional):"),
@@ -205,7 +214,8 @@ shinyUI(fluidPage(
              p(
                  "To use this tab, fill in the variables under", strong("Set Variables"), "and click the", actionButton(inputId="dud", label="Calculate", icon("random")),
                  "button to calculate variables at a certain redshift. Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
-                 "for all calculations. The", strong("Default Parameters"), "box lets you set the variables (H0, OmegaM and OmegaL) to a known setting."
+                 "for all calculations.",
+                 "The", strong("Default Parameters"), "box lets you set the variables (H0, OmegaM and OmegaL) to a known setting."
              ),
              p(
                  "Under", strong("Custom Calc,"), "the calculation may be done using a chosen variable from the", span("Variable", style="text-decoration:underline;"), "menu.",
@@ -222,7 +232,9 @@ shinyUI(fluidPage(
                  actionButton(inputId="dud", label="Plot", icon("random")), " to produce plots across a redshift range.",
                  "The first plot is a distance plot, and the second plot is a custom plot which may be modified using the options under", strong("Custom Plot."),
                  "Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
-                 "for all calculations. Some of the plot options are as follows:"
+                 "for all calculations.",
+                 "The", strong("Default Parameters"), "box lets you set the variables (H0, OmegaM and OmegaL) to a known setting.",
+                 "Some of the plot options are as follows:"
              ),
              p(strong("z Start"), "- The starting redshift for the plots."),
              p(strong("z End"), "- The finishing redshift for the plots."),
@@ -237,7 +249,9 @@ shinyUI(fluidPage(
              ),
              p(
                  "To use this tab, fill in the variables under", strong("Set Variables"), "and click the", actionButton(inputId="dud", label="Calculate", icon("random")),
-                 "button to calculate the Comoving Volume. If the area is unknown, an extra option under", strong("Find Area (optional)"), "can be used the find the area of the sky given the latitude and longitude.",
+                 "button to calculate the Comoving Volume.",
+                 "The", strong("Default Parameters"), "box lets you set the variables (H0, OmegaM and OmegaL) to a known setting.",
+                 "If the area is unknown, an extra option under", strong("Find Area (optional)"), "can be used the find the area of the sky given the latitude and longitude.",
                  "The Area field is then updated by clicking the", actionButton(inputId="dud", icon("arrow-up")), "button."
              ),
              br(),
