@@ -238,8 +238,7 @@ shinyUI(fluidPage(
              div(
                  h3("About"),
                  p(span("Welcome to ICRAR's Cosmology Calculator!", style="color:#08c"),
-                   "This calculator was written by", strong("Joseph Dunne"), "and", strong("Aaron Robotham"), "in the programming language R, and uses the library Shiny to provide
-                   the interface."),
+                   "This calculator was written by", strong("Joseph Dunne"), "and", strong("Aaron Robotham"), "in the programming language R, and uses the library Shiny to provide the interface. The functions are available as part of Aaron Robotham's R", a("celestial", href="https://github.com/asgr/celestial", target="_blank"), "package."),
                  br(),
                  h4("Calculation", style='color:#08c'),
                  p(
