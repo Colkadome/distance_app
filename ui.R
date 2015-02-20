@@ -289,14 +289,47 @@ shinyUI(fluidPage(
                      "The Area field is then updated by clicking the", actionButton(inputId="dud", icon("arrow-up")), "button."
                  ),
                  br(),
-                 h4("CosmoCalc References"),
-                 p(a("Hamilton A. J. S., 2001, MNRAS 322 419", href="http://adsabs.harvard.edu/abs/2001MNRAS.322..419H", target="_blank")),
-                 p(a("Hogg D. W., et al., 1999 (arXiv 9905116)", href="http://arxiv.org/abs/astro-ph/9905116", target="_blank")),
-                 p(a("Lahav O., et al., 1991, MNRAS, 251, 136", href="http://adsabs.harvard.edu/abs/1991MNRAS.251..128L", target="_blank")),
-                 p(a("Wright E. L., 2006, PASP, 118, 1711", href="http://adsabs.harvard.edu/abs/2006PASP..118.1711W", target="_blank")),
-                 br(),
-                 h4("Reference Sets"),
-                 p(a("Hamilton A. J. S., 2001, MNRAS 322 419", href="http://adsabs.harvard.edu/abs/2001MNRAS.322..419H", target="_blank")),
+                 fluidRow(
+                     column(5,
+                            h4("CosmoCalc References"),
+                            p(a("Hamilton A. J. S., 2001, MNRAS, 322, 419", href="http://adsabs.harvard.edu/abs/2001MNRAS.322..419H", target="_blank")),
+                            p(a("Hogg D. W., et al., 1999 (arXiv 9905116)", href="http://arxiv.org/abs/astro-ph/9905116", target="_blank")),
+                            p(a("Lahav O., et al., 1991, MNRAS, 251, 136", href="http://adsabs.harvard.edu/abs/1991MNRAS.251..128L", target="_blank")),
+                            p(a("Wright E. L., 2006, PASP, 118, 1711", href="http://adsabs.harvard.edu/abs/2006PASP..118.1711W", target="_blank")),
+                            br()
+                            ),
+                     column(7,
+                            h4("Reference Sets"),
+                            HTML("<table class='table table-condensed'><tbody>
+                                <tr>
+                                <td>Planck</th>
+                                <td><a href='http://arxiv.org/abs/1303.5076' target='_blank'>Ade P. A. R., et al., 2013 (arXiv:1303.5076)</a></th>
+                                </tr>
+                                <tr>
+                                <td>WMAP9</th>
+                                <td><a href='http://arxiv.org/abs/1212.5226' target='_blank'>Hinshaw G., et al., 2012 (arXiv:1212.5226)</a></th>
+                                </tr>
+                                <td>WMAP7</th>
+                                <td><a href='http://arxiv.org/abs/1001.4538' target='_blank'>Komatsu E., et al., 2010 (arXiv:1001.4538)</a></th>
+                                </tr>
+                                <td>WMAP5</th>
+                                <td><a href='http://arxiv.org/abs/0803.0547' target='_blank'>Komatsu E., et al., 2008 (arXiv:0803.0547)</a></th>
+                                </tr>
+                                <td>WMAP3</th>
+                                <td><a href='http://arxiv.org/abs/astro-ph/0603449' target='_blank'>Spergel D. N., et al., 2006 (arXiv:astro-ph/0603449)</a></th>
+                                </tr>
+                                <td>WMAP1</th>
+                                <td><a href='http://arxiv.org/abs/astro-ph/0302209' target='_blank'>Spergel D. N., et al., 2003 (arXiv:astro-ph/0302209)</a></th>
+                                </tr>
+                                <td>Millennium</th>
+                                <td><a href='' target='_blank'>?????</a></th>
+                                </tr>
+                                <td>GiggleZ</th>
+                                <td><a href='http://arxiv.org/abs/1407.0390' target='_blank'>Poole G. B., et al., 2014 (arXiv:1407.0390)</a></th>
+                                </tr>
+                                </tbody></table>")
+                            )
+                    ),
              class="container-fluid")
     ),
     # The R Code tab #

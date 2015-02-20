@@ -26,7 +26,7 @@ defaultParams <- list(
         "OmegaM"=0.30,
         "OmegaL"=0.70),
     "Planck"=list(
-        "H0"=70.4,
+        "H0"=67.11,
         "OmegaM"=0.3175,
         "OmegaL"=0.6825),
     "WMAP9"=list(
