@@ -57,7 +57,7 @@ shinyUI(fluidPage(
                                                                                                          if(lookUpTable[[i]]$val != 'z' && lookUpTable[[i]]$val != 'AngSize' && lookUpTable[[i]]$val != 'AngDist' && lookUpTable[[i]]$val != 'HubTime' && lookUpTable[[i]]$val != 'UniAgeNow')
                                                                                                              l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
                                                                                                      };l},
-                                             selected="CoVol")
+                                             selected="TravelTime")
                              ),
                              mainPanel(
                                  uiOutput("calcOut")
@@ -98,7 +98,7 @@ shinyUI(fluidPage(
                      ),
                      fluidRow(
                          column(6,
-                                textInput(inputId="plotRes", label="z Resolution", value="100")
+                                numericInput(inputId="plotRes", label="z Resolution", value=100, min=10, max=1000)
                          ),
                          column(6,
                                 selectInput("plotAxis", label="x Axis", choices = {l <- list();
@@ -303,29 +303,29 @@ shinyUI(fluidPage(
                             HTML("<table class='table table-condensed'><tbody>
                                 <tr>
                                 <td>Planck</th>
-                                <td><a href='http://arxiv.org/abs/1303.5076' target='_blank'>Ade P. A. R., et al., 2013 (arXiv:1303.5076)</a></th>
+                                <td><a href='http://arxiv.org/abs/1303.5076' target='_blank'>Planck Collaboration, 2014, A&A, 571, 16 (arXiv:1303.5076)</a></th>
                                 </tr>
                                 <tr>
                                 <td>WMAP9</th>
-                                <td><a href='http://arxiv.org/abs/1212.5226' target='_blank'>Hinshaw G., et al., 2012 (arXiv:1212.5226)</a></th>
+                                <td><a href='http://arxiv.org/abs/1212.5226' target='_blank'>Hinshaw G., et al., 2013, ApJS, 208, 19 (arXiv:1212.5226)</a></th>
                                 </tr>
                                 <td>WMAP7</th>
-                                <td><a href='http://arxiv.org/abs/1001.4538' target='_blank'>Komatsu E., et al., 2010 (arXiv:1001.4538)</a></th>
+                                <td><a href='http://arxiv.org/abs/1001.4538' target='_blank'>Komatsu E., et al., 2010, ApJS, 192, 18 (arXiv:1001.4538)</a></th>
                                 </tr>
                                 <td>WMAP5</th>
-                                <td><a href='http://arxiv.org/abs/0803.0547' target='_blank'>Komatsu E., et al., 2008 (arXiv:0803.0547)</a></th>
+                                <td><a href='http://arxiv.org/abs/0803.0547' target='_blank'>Dunkley J., et al., 2009, ApJS, 180, 306 (arXiv:0803.0547)</a></th>
                                 </tr>
                                 <td>WMAP3</th>
-                                <td><a href='http://arxiv.org/abs/astro-ph/0603449' target='_blank'>Spergel D. N., et al., 2006 (arXiv:astro-ph/0603449)</a></th>
+                                <td><a href='http://arxiv.org/abs/astro-ph/0603449' target='_blank'>Spergel D. N., et al., 2007, ApJS, 170, 377 (arXiv:astro-ph/0603449)</a></th>
                                 </tr>
                                 <td>WMAP1</th>
-                                <td><a href='http://arxiv.org/abs/astro-ph/0302209' target='_blank'>Spergel D. N., et al., 2003 (arXiv:astro-ph/0302209)</a></th>
+                                <td><a href='http://arxiv.org/abs/astro-ph/0302209' target='_blank'>Spergel D. N., et al., 2003, ApJS, 148, 175 (arXiv:astro-ph/0302209)</a></th>
                                 </tr>
                                 <td>Millennium</th>
-                                <td><a href='' target='_blank'>?????</a></th>
+                                <td><a href='http://arxiv.org/abs/astro-ph/0504097' target='_blank'>Springel V., et al., 2005, Nature, 435, 629 (arXiv:astro-ph/0504097)</a></th>
                                 </tr>
                                 <td>GiggleZ</th>
-                                <td><a href='http://arxiv.org/abs/1407.0390' target='_blank'>Poole G. B., et al., 2014 (arXiv:1407.0390)</a></th>
+                                <td><a href='http://arxiv.org/abs/1407.0390' target='_blank'>Poole G. B., et al., 201?, MNRAS, ?, ? (arXiv:1407.0390)</a></th>
                                 </tr>
                                 </tbody></table>")
                             )

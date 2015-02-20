@@ -29,6 +29,14 @@ defaultParams <- list(
         "H0"=67.11,
         "OmegaM"=0.3175,
         "OmegaL"=0.6825),
+    "Planck + lens"=list(
+        "H0"=68.14,
+        "OmegaM"=0.3036,
+        "OmegaL"=0.6964),
+    "Planck + WP"=list(
+        "H0"=67.04,
+        "OmegaM"=0.3183,
+        "OmegaL"=0.6817),
     "WMAP9"=list(
         "H0"=69.7,
         "OmegaM"=0.2821,

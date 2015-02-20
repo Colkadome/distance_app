@@ -38,7 +38,7 @@ shinyServer(function(input, output, clientData, session) {
             if(axis$val=='RhoCrit'){axisValue=axisValue*1e10}
             
             # get custom results
-            r <- cosmapval(axisValue, axis$val, H0, OmegaM, OmegaL, zrange=c(0,100), res=12, iter=12, out='cos')
+            r <- cosmapval(axisValue, axis$val, H0, OmegaM, OmegaL, zrange=c(-0.99,100), res=12, iter=12, out='cos')
             updateTextInput(session, "calcz", value = r$z)
             r <- cbind(r, cosgrow(r$z, H0, OmegaM, OmegaL))
         }
@@ -186,7 +186,9 @@ shinyServer(function(input, output, clientData, session) {
         # get the z points using input
         start <- as.numeric(input$plotStart)
         end <- as.numeric(input$plotEnd)
-        res <- as.numeric(input$plotRes)
+        res <- input$plotRes
+        if(res<10){res=10; updateNumericInput(session, "plotRes", value=10)}
+        else if(res>1000){res=1000; updateNumericInput(session, "plotRes", value=1000)}
         z <- seq(start, end, (end-start)/res)
         
         # get results
