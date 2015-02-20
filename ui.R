@@ -300,16 +300,17 @@ shinyUI(fluidPage(
     ##################
     tabPanel("R Code",
              p("Basic cosmological distance calculator R code used server-side to generate outputs."),
-             p("Written by Aaron Robotham (see", span("Info", style='color:#08c'), "tab for references)."),
+             p("Written by Aaron Robotham as part of the R",a("celestial", href="https://github.com/asgr/celestial", target="_blank"), "package (see", span("Info", style='color:#08c'), "tab for references)."),
              strong("cosdist"),
-             HTML('<pre class="prettyprint lang-r" style="padding:5px">function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM, 
+             HTML('<pre class="prettyprint lang-r" style="padding:5px">
+function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM, 
     age = FALSE, error = FALSE) 
 {
     if (!all(is.finite(z))) {
         stop("All z must be finite and numeric")
     }
     if (!all(z >= 0)) {
-        stop("All z must be >=0")
+        stop("All z must be > -1")
     }
     OmegaK = 1 - OmegaM - OmegaL
     Einv = function(z, OmegaM, OmegaL, OmegaK) {
@@ -403,13 +404,14 @@ shinyUI(fluidPage(
 }</pre>'
              ),
              strong("cosgrow"),
-             HTML('<pre class="prettyprint lang-r" style="padding:5px">function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM) 
+             HTML('<pre class="prettyprint lang-r" style="padding:5px">
+                  function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM) 
 {
     if (!all(is.finite(z))) {
         stop("All z must be finite and numeric")
     }
     if (!all(z >= 0)) {
-        stop("All z must be >=0")
+        stop("All z must be > -1")
     }
     OmegaK = 1 - OmegaM - OmegaL
     temp = function(z, H0, OmegaM, OmegaL, OmegaK) {
