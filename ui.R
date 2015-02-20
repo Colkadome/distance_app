@@ -236,66 +236,66 @@ shinyUI(fluidPage(
     ################
     tabPanel("Info",
              div(
-             h3("About"),
-             p(span("Welcome to ICRAR's Cosmology Calculator!", style="color:#08c"),
-               "This calculator was written by", strong("Joseph Dunne"), "and", strong("Aaron Robotham"), "in the programming language R, and uses the library Shiny to provide
-               the interface."),
-             br(),
-             h4("Calculation", style='color:#08c'),
-             p(
-                 "This tab is used to calculate various distance parameters."
-             ),
-             p(
-                 "To use this tab, fill in the variables under", strong("Set Variables"), "and click the", actionButton(inputId="dud", label="Calculate", icon("random")),
-                 "button to calculate variables at a certain redshift. Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
-                 "for all calculations.",
-                 "The", strong("Reference Set"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP)."
-             ),
-             p(
-                 "Under", strong("Custom Calc,"), "the calculation may be done using a chosen variable from the", span("Variable", style="text-decoration:underline;"), "menu.",
-                 "When the", span("Value", style="text-decoration:underline;"), "box contains a value, the custom calculation will be used next time the", actionButton(inputId="dud", label="Calculate", icon("random")),
-                 "button is clicked.",
-                 "Mappings are not availabe for AngDist (angular diameter distance) or AngSize (physical projected size) because the solutions are ambiguous."
-             ),
-             br(),
-             h4("Plot", style='color:#08c'),
-             p(
-                 "This tab is used to plot various parameters."
-             ),
-             p(
-                 "To use this tab, fill in the variables under", strong("Set Variables"), "and", strong("Plot Options,"), "and click",
-                 actionButton(inputId="dud", label="Plot", icon("random")), " to produce plots across a redshift range.",
-                 "The first plot is a distance plot, and the second plot is a custom plot which may be modified using the options under", strong("Custom Plot."),
-                 "Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
-                 "for all calculations.",
-                 "The", strong("Reference Set"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP).",
-                 "Some of the plot options are as follows:"
-             ),
-             p(strong("z Start"), "- The starting redshift for the plots."),
-             p(strong("z End"), "- The finishing redshift for the plots."),
-             p(strong("z Resolution"), "- The number of points to plot between", strong("z Start"), "and", strong("z End.")),
-             p(
-                 "The resulting data can be saved using the options under", strong("Save Data.")
-             ),
-             br(),
-             h4("Survey Design", style='color:#08c'),
-             p(
-                 "This tab is used to find the Comoving Volume of an area in the sky."
-             ),
-             p(
-                 "To use this tab, fill in the variables under", strong("Set Variables"), "and click the", actionButton(inputId="dud", label="Calculate", icon("random")),
-                 "button to calculate the Comoving Volume.",
-                 "The", strong("Reference Set"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP).",
-                 "If the area is unknown, an extra option under", strong("Find Area (optional)"), "can be used the find the area of the sky given the latitude and longitude.",
-                 "The Area field is then updated by clicking the", actionButton(inputId="dud", icon("arrow-up")), "button."
-             ),
-             br(),
-             h4("References"),
-             p(a("Hamilton A. J. S., 2001, MNRAS 322 419", href="http://adsabs.harvard.edu/abs/2001MNRAS.322..419H", target="_blank")),
-             p(a("Hogg D. W., et al., 1999 (arXiv 9905116)", href="http://arxiv.org/abs/astro-ph/9905116", target="_blank")),
-             p(a("Lahav O., et al., 1991, MNRAS, 251, 136", href="http://adsabs.harvard.edu/abs/1991MNRAS.251..128L", target="_blank")),
-             p(a("Wright E. L., 2006, PASP, 118, 1711", href="http://adsabs.harvard.edu/abs/2006PASP..118.1711W", target="_blank"))
-             , class="container-fluid")
+                 h3("About"),
+                 p(span("Welcome to ICRAR's Cosmology Calculator!", style="color:#08c"),
+                   "This calculator was written by", strong("Joseph Dunne"), "and", strong("Aaron Robotham"), "in the programming language R, and uses the library Shiny to provide
+                   the interface."),
+                 br(),
+                 h4("Calculation", style='color:#08c'),
+                 p(
+                     "This tab is used to calculate various distance parameters."
+                 ),
+                 p(
+                     "To use this tab, fill in the variables under", strong("Set Variables"), "and click the", actionButton(inputId="dud", label="Calculate", icon("random")),
+                     "button to calculate variables at a certain redshift. Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
+                     "for all calculations.",
+                     "The", strong("Reference Set"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP)."
+                 ),
+                 p(
+                     "Under", strong("Custom Calc,"), "the calculation may be done using a chosen variable from the", span("Variable", style="text-decoration:underline;"), "menu.",
+                     "When the", span("Value", style="text-decoration:underline;"), "box contains a value, the custom calculation will be used next time the", actionButton(inputId="dud", label="Calculate", icon("random")),
+                     "button is clicked.",
+                     "Mappings are not availabe for AngDist (angular diameter distance) or AngSize (physical projected size) because the solutions are ambiguous."
+                 ),
+                 br(),
+                 h4("Plot", style='color:#08c'),
+                 p(
+                     "This tab is used to plot various parameters."
+                 ),
+                 p(
+                     "To use this tab, fill in the variables under", strong("Set Variables"), "and", strong("Plot Options,"), "and click",
+                     actionButton(inputId="dud", label="Plot", icon("random")), " to produce plots across a redshift range.",
+                     "The first plot is a distance plot, and the second plot is a custom plot which may be modified using the options under", strong("Custom Plot."),
+                     "Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
+                     "for all calculations.",
+                     "The", strong("Reference Set"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP).",
+                     "Some of the plot options are as follows:"
+                 ),
+                 p(strong("z Start"), "- The starting redshift for the plots."),
+                 p(strong("z End"), "- The finishing redshift for the plots."),
+                 p(strong("z Resolution"), "- The number of points to plot between", strong("z Start"), "and", strong("z End.")),
+                 p(
+                     "The resulting data can be saved using the options under", strong("Save Data.")
+                 ),
+                 br(),
+                 h4("Survey Design", style='color:#08c'),
+                 p(
+                     "This tab is used to find the Comoving Volume of an area in the sky."
+                 ),
+                 p(
+                     "To use this tab, fill in the variables under", strong("Set Variables"), "and click the", actionButton(inputId="dud", label="Calculate", icon("random")),
+                     "button to calculate the Comoving Volume.",
+                     "The", strong("Reference Set"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP).",
+                     "If the area is unknown, an extra option under", strong("Find Area (optional)"), "can be used the find the area of the sky given the latitude and longitude.",
+                     "The Area field is then updated by clicking the", actionButton(inputId="dud", icon("arrow-up")), "button."
+                 ),
+                 br(),
+                 h4("References"),
+                 p(a("Hamilton A. J. S., 2001, MNRAS 322 419", href="http://adsabs.harvard.edu/abs/2001MNRAS.322..419H", target="_blank")),
+                 p(a("Hogg D. W., et al., 1999 (arXiv 9905116)", href="http://arxiv.org/abs/astro-ph/9905116", target="_blank")),
+                 p(a("Lahav O., et al., 1991, MNRAS, 251, 136", href="http://adsabs.harvard.edu/abs/1991MNRAS.251..128L", target="_blank")),
+                 p(a("Wright E. L., 2006, PASP, 118, 1711", href="http://adsabs.harvard.edu/abs/2006PASP..118.1711W", target="_blank")),
+             class="container-fluid")
     ),
     # The R Code tab #
     ##################
