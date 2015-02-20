@@ -25,7 +25,7 @@ defaultParams <- list(
         "H0"=70.0,
         "OmegaM"=0.30,
         "OmegaL"=0.70),
-    "PLANCK 2013"=list(
+    "Planck"=list(
         "H0"=70.4,
         "OmegaM"=0.3175,
         "OmegaL"=0.6825),
@@ -49,7 +49,7 @@ defaultParams <- list(
         "H0"=72.0,
         "OmegaM"=0.290,
         "OmegaL"=0.710),
-    "Millenium (and WALLABY)"=list(
+    "Millennium"=list(
         "H0"=73.0,
         "OmegaM"=0.250,
         "OmegaL"=0.750),

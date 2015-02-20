@@ -289,11 +289,14 @@ shinyUI(fluidPage(
                      "The Area field is then updated by clicking the", actionButton(inputId="dud", icon("arrow-up")), "button."
                  ),
                  br(),
-                 h4("References"),
+                 h4("CosmoCalc References"),
                  p(a("Hamilton A. J. S., 2001, MNRAS 322 419", href="http://adsabs.harvard.edu/abs/2001MNRAS.322..419H", target="_blank")),
                  p(a("Hogg D. W., et al., 1999 (arXiv 9905116)", href="http://arxiv.org/abs/astro-ph/9905116", target="_blank")),
                  p(a("Lahav O., et al., 1991, MNRAS, 251, 136", href="http://adsabs.harvard.edu/abs/1991MNRAS.251..128L", target="_blank")),
                  p(a("Wright E. L., 2006, PASP, 118, 1711", href="http://adsabs.harvard.edu/abs/2006PASP..118.1711W", target="_blank")),
+                 br(),
+                 h4("Reference Sets"),
+                 p(a("Hamilton A. J. S., 2001, MNRAS 322 419", href="http://adsabs.harvard.edu/abs/2001MNRAS.322..419H", target="_blank")),
              class="container-fluid")
     ),
     # The R Code tab #

@@ -222,6 +222,11 @@ shinyServer(function(input, output, clientData, session) {
         useLogX <- input$plotLogX
         useLogY <- input$plotLogY
         
+        # find the min and max distances to scale Y axis correctly
+        all <- c(r$LumDist, r$CoDistTran, r$CoDist, r$AngDist)
+        ymin <- min(all)
+        ymax <- max(all)
+        
         # set the 'log' attribute in magplot
         log <- ''
         if(useLogX) {
@@ -229,12 +234,8 @@ shinyServer(function(input, output, clientData, session) {
         }
         if(useLogY) {
             log <- paste0(log, 'y')
+            ymin <- min(all[all>0])
         }
-        
-        # find the min and max distances to scale Y axis correctly
-        all <- c(r$LumDist, r$CoDistTran, r$CoDist, r$AngDist)
-        ymin <- min(all[all>0])
-        ymax <- max(all)
         
         # format the x axis label
         xlab_str <- paste0('"',xAxis$label,'"')
