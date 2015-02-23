@@ -60,7 +60,13 @@ shinyUI(fluidPage(
                                              selected="TravelTime")
                              ),
                              mainPanel(
-                                 uiOutput("calcOut")
+                                 fluidRow(column(6,
+                                                 uiOutput("calcOut_1")
+                                                 ),
+                                          column(6,
+                                                 uiOutput("calcOut_2")
+                                                 )
+                                          )
                              )
                          )
     ),

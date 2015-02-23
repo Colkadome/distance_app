@@ -54,23 +54,17 @@ shinyServer(function(input, output, clientData, session) {
         return (r)
     })
     
-    
-    # The Calculation Output #
-    ##########################
-    output$calcOut <- renderUI ({
+    # The Calculation Output (column 1) #
+    #####################################
+    output$calcOut_1 <- renderUI ({
         
         # get calculation result + sigFigs (reactive!)
         r <- calcResult()
         sigF <- input$calcSigFigs
         t <- lookUpTable
         
-        # NOTE
-        # sigF seems to have a max of 15.
-        
         # build output based on the results (r) and the lookUpTable (t)
         list(
-            HTML("<div class='row-fluid'>"),
-            HTML("<div class='span6'>"),
             HTML("<h4>Results :</h4>"),
             HTML("<p>The redshift <b>z</b> is <span style='color:#08c;'>", signif(r$z,digits=sigF), "</span></p>"),
             HTML("<p>The expansion factor <b>a</b> is <span style='color:#08c;'>", signif(r$a,digits=sigF), "</span></p>"),
@@ -84,9 +78,21 @@ shinyServer(function(input, output, clientData, session) {
             HTML("<p>The <b>", t$DistMod$label, "</b> to z is <span style='color:#08c;'>", signif(r$DistMod,digits=sigF), "</span> ", t$DistMod$unit_html,"</p>"),
             HTML("<p>The <b>", t$AngSize$label, "</b> at z is <span style='color:#08c;'>", signif(r$AngSize,digits=sigF), "</span> ", t$AngSize$unit_html,"</p>"),
             HTML("<p>The <b>", t$CoVol$label, "</b> to z is <span style='color:#08c;'>", signif(r$CoVol,digits=sigF), "</span> ", t$CoVol$unit_html,"</p>"),
-            HTML("<br/>"),
-            HTML("</div>"),
-            HTML("<div class='span6'>"),
+            HTML("<br/>")
+        )
+    })
+    
+    # The Calculation Output (column 2) #
+    #####################################
+    output$calcOut_2 <- renderUI ({
+        
+        # get calculation result + sigFigs (reactive!)
+        r <- calcResult()
+        sigF <- input$calcSigFigs
+        t <- lookUpTable
+        
+        # build output based on the results (r) and the lookUpTable (t)
+        list(
             HTML("<h4>z dependent times :</h4>"),
             HTML("<p>The <b>", t$UniAgeAtz$label, "</b> at z is <span style='color:#08c;'>", signif(r$UniAgeAtz,digits=sigF), "</span> ", t$UniAgeAtz$unit_html,"</p>"),
             HTML("<p>The <b>", t$TravelTime$label, "</b> at z is <span style='color:#08c;'>", signif(r$TravelTime,digits=sigF), "</span> ", t$TravelTime$unit_html,"</p>"),
@@ -102,9 +108,7 @@ shinyServer(function(input, output, clientData, session) {
             HTML("<p><b>", t$OmegaK$label, "</b> at z is <span style='color:#08c;'>", signif(r$OmegaK,digits=sigF), "</span> ", t$OmegaK$unit_html, "</p>"),
             HTML("<p>The <b>", t$Factor$label, "</b> to z is <span style='color:#08c;'>", signif(r$Factor,digits=sigF), "</span> ", t$Factor$unit_html, "</p>"),
             HTML("<p>The <b>", t$Rate$label, "</b> at z is <span style='color:#08c;'>", signif(r$Rate,digits=sigF), "</span> ", t$Rate$unit_html, "</p>"),
-            HTML("<p>The <b>", t$RhoCrit$label, "</b> at z is <span style='color:#08c;'>", signif(r$RhoCrit,digits=sigF), "</span> ", t$RhoCrit$unit_html, "</p>"),
-            HTML("</div>"),
-            HTML("</div>")
+            HTML("<p>The <b>", t$RhoCrit$label, "</b> at z is <span style='color:#08c;'>", signif(r$RhoCrit,digits=sigF), "</span> ", t$RhoCrit$unit_html, "</p>")
         )
     })
     
