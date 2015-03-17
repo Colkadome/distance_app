@@ -11,9 +11,9 @@ shinyServer(function(input, output, clientData, session) {
             OmegaL <- 1 - OmegaM
         }
         else {
-            OmegaL <- as.numeric(OmegaL_string)
+            OmegaL <- OmegaL_string
         }
-        return (OmegaL)
+        return(as.numeric(OmegaL))
     }
     
     # The Cosmo Calc #
@@ -24,10 +24,12 @@ shinyServer(function(input, output, clientData, session) {
         input$submitCalc
         
         # get variables from input
-        z <- isolate(as.numeric(input$calcz))
-        H0 <- isolate(as.numeric(input$calcH0))
-        OmegaM <- isolate(as.numeric(input$calcOmegaM))
+        z <- as.numeric(isolate(input$calcz))
+        H0 <- as.numeric(isolate(input$calcH0))
+        OmegaM <- as.numeric(isolate(input$calcOmegaM))
         OmegaL <- getOmegaL(OmegaM, isolate(input$calcOmegaL))
+        Sigma8 <- as.numeric(isolate(input$calcSigma8))
+        fSigma8 <- as.logical(isolate(input$calcfSigma8))
         
         # if the custom field is filled, use the custom calculation
         if(nchar(isolate(input$custom_calcValue)) > 0) {
@@ -36,16 +38,17 @@ shinyServer(function(input, output, clientData, session) {
             axisValue <- as.numeric(isolate(input$custom_calcValue))
             # unit conversion
             if(axis$val=='RhoCrit'){axisValue=axisValue*1e10}
+            degen=as.character(isolate(input$custom_calcDegen))
             
             # get custom results
-            r <- cosmapval(axisValue, axis$val, H0, OmegaM, OmegaL, zrange=c(-0.99,100), res=12, iter=12, out='cos')
+            r <- cosmapval(val=axisValue, cosparam=axis$val, H0=H0, OmegaM=OmegaM, OmegaL=OmegaL, Sigma8=Sigma8, fSigma8=fSigma8, zrange=c(-0.99,100), res=100, iter=8, out='cos', degen=degen)
             updateTextInput(session, "calcz", value = r$z)
-            r <- cbind(r, cosgrow(r$z, H0, OmegaM, OmegaL))
+            r <- cbind(r, cosgrow(z=r$z, H0=H0, OmegaM=OmegaM, OmegaL=OmegaL, Sigma8=Sigma8, fSigma8=fSigma8))
         }
         else {
             # get normal results
-            r <- cosdist(z, H0, OmegaM, OmegaL, age=T, error=T)
-            r <- cbind(r, cosgrow(z, H0, OmegaM, OmegaL))
+            r <- cosdist(z=z, H0=H0, OmegaM=OmegaM, OmegaL=OmegaL, age=TRUE, error=TRUE)
+            r <- cbind(r, cosgrow(z=z, H0=H0, OmegaM=OmegaM, OmegaL=OmegaL, Sigma8=Sigma8, fSigma8=fSigma8))
         }
         
         # unit conversion
@@ -108,6 +111,7 @@ shinyServer(function(input, output, clientData, session) {
             HTML("<p><b>", t$OmegaK$label, "</b> at z is <span style='color:#08c;'>", signif(r$OmegaK,digits=sigF), "</span> ", t$OmegaK$unit_html, "</p>"),
             HTML("<p>The <b>", t$Factor$label, "</b> to z is <span style='color:#08c;'>", signif(r$Factor,digits=sigF), "</span> ", t$Factor$unit_html, "</p>"),
             HTML("<p>The <b>", t$Rate$label, "</b> at z is <span style='color:#08c;'>", signif(r$Rate,digits=sigF), "</span> ", t$Rate$unit_html, "</p>"),
+            HTML("<p>The <b>", t$Sigma8$label, "</b> at z is <span style='color:#08c;'>", signif(r$Sigma8,digits=sigF), "</span> ", t$Sigma8$unit_html, "</p>"),
             HTML("<p>The <b>", t$RhoCrit$label, "</b> at z is <span style='color:#08c;'>", signif(r$RhoCrit,digits=sigF), "</span> ", t$RhoCrit$unit_html, "</p>")
         )
     })
@@ -139,17 +143,18 @@ shinyServer(function(input, output, clientData, session) {
         H0 <- as.numeric(input$calcH0)
         OmegaM <- as.numeric(input$calcOmegaM)
         OmegaL <- getOmegaL(OmegaM, input$calcOmegaL)
+        Sigma8 <- as.numeric(input$calcSigma8)
         
         # if the text entry is by the user, check if it matches any of the default values.
         if(isolate(calcLastAction$last) != "updateText") {
-            if(is.na(H0) || is.na(OmegaM) || is.na(OmegaL)) {
+            if(is.na(H0) || is.na(OmegaM) || is.na(OmegaL)  || is.na(Sigma8)) {
                 updateSelectInput(session, "calcDefaults", selected = "Custom")
                 return()
             }
             for(n in names(defaultParams)) {
                 if(n != "Custom") {
                     l <- defaultParams[[n]]
-                    if(H0 == l$H0 && OmegaM == l$OmegaM && OmegaL == l$OmegaL) {
+                    if(H0 == l$H0 && OmegaM == l$OmegaM && OmegaL == l$OmegaL && Sigma8==l$Sigma8) {
                         calcLastAction$last <- "updateSelect"
                         updateSelectInput(session, "calcDefaults", selected = n)
                         return()
@@ -172,6 +177,7 @@ shinyServer(function(input, output, clientData, session) {
             updateTextInput(session, "calcH0", value = defaultParams[[selected]]$H0)
             updateTextInput(session, "calcOmegaM", value = defaultParams[[selected]]$OmegaM)
             updateTextInput(session, "calcOmegaL", value = defaultParams[[selected]]$OmegaL)
+            updateTextInput(session, "calcSigma8", value = defaultParams[[selected]]$Sigma8)
         }
         else {
             calcLastAction$last <- "none"
@@ -186,6 +192,8 @@ shinyServer(function(input, output, clientData, session) {
         H0 <- as.numeric(input$plotH0)
         OmegaM <- as.numeric(input$plotOmegaM)
         OmegaL <- getOmegaL(OmegaM, input$plotOmegaL)
+        Sigma8 <- as.numeric(input$plotSigma8)
+        fSigma8 <- as.logical(input$plotfSigma8)
         
         # get the z points using input
         start <- as.numeric(input$plotStart)
@@ -196,8 +204,8 @@ shinyServer(function(input, output, clientData, session) {
         z <- seq(start, end, (end-start)/res)
         
         # get results
-        r <- cosdist(z, H0, OmegaM, OmegaL, TRUE)
-        r <- cbind(r, cosgrow(z, H0, OmegaM, OmegaL))
+        r <- cosdist(z=z, H0=H0, OmegaM=OmegaM, OmegaL=OmegaL, age=TRUE, error=TRUE)
+        r <- cbind(r, cosgrow(z=z, H0=H0, OmegaM=OmegaM, OmegaL=OmegaL, Sigma8=Sigma8, fSigma8=fSigma8))
         # unit conversion
         r$RhoCrit <- r$RhoCrit/1e10
         
@@ -316,17 +324,18 @@ shinyServer(function(input, output, clientData, session) {
         H0 <- as.numeric(input$plotH0)
         OmegaM <- as.numeric(input$plotOmegaM)
         OmegaL <- getOmegaL(OmegaM, input$plotOmegaL)
+        Sigma8 <- as.numeric(input$plotSigma8)
         
         # if the text entry is by the user, check if it matches any of the default values.
         if(isolate(plotLastAction$last) != "updateText") {
-            if(is.na(H0) || is.na(OmegaM) || is.na(OmegaL)) {
+            if(is.na(H0) || is.na(OmegaM) || is.na(OmegaL) || is.na(Sigma8)) {
                 updateSelectInput(session, "plotDefaults", selected = "Custom")
                 return()
             }
             for(n in names(defaultParams)) {
                 if(n != "Custom") {
                     l <- defaultParams[[n]]
-                    if(H0 == l$H0 && OmegaM == l$OmegaM && OmegaL == l$OmegaL) {
+                    if(H0 == l$H0 && OmegaM == l$OmegaM && OmegaL == l$OmegaL && Sigma8 == l$Sigma8) {
                         plotLastAction$last <- "updateSelect"
                         updateSelectInput(session, "plotDefaults", selected = n)
                         return()
@@ -349,6 +358,7 @@ shinyServer(function(input, output, clientData, session) {
             updateTextInput(session, "plotH0", value = defaultParams[[selected]]$H0)
             updateTextInput(session, "plotOmegaM", value = defaultParams[[selected]]$OmegaM)
             updateTextInput(session, "plotOmegaL", value = defaultParams[[selected]]$OmegaL)
+            updateTextInput(session, "plotSigma8", value = defaultParams[[selected]]$Sigma8)
         }
         else {
             plotLastAction$last <- "none"
@@ -406,12 +416,12 @@ shinyServer(function(input, output, clientData, session) {
         else {
             OmegaL <- as.numeric(isolate(input$sky_OmegaL))
         }
-        unit <- isolate(input$sky_areaUnit)
+        unit <- as.character(isolate(input$sky_areaUnit))
         minz <- as.numeric(isolate(input$sky_minz))
         maxz <- as.numeric(isolate(input$sky_maxz))
         
         # get result
-        s <- cosvol(area, maxz, minz, H0, OmegaM, OmegaL, unit)
+        s <- cosvol(area=area, zmax=maxz, zmin=minz, H0=H0, OmegaM=OmegaM, OmegaL=OmegaL, inunit=unit)
         
         return(s)
     })

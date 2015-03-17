@@ -50,11 +50,26 @@ shinyUI(fluidPage(
                                             textInput(inputId="calcOmegaL", label="OmegaL", value="1-OmegaM")
                                      )
                                  ),
+                                 fluidRow(
+                                     column(6,
+                                            textInput(inputId="calcSigma8", label="Sigma8", value="0.8")
+                                     ),
+                                     column(6,
+                                            checkboxInput(inputId="calcfSigma8", label=" Calc fSigma8", value=FALSE)
+                                     )
+                                 ),
                                  h4("Custom Calc:"),
-                                 textInput(inputId="custom_calcValue", label=uiOutput("custom_calcUnit"), value=""),
+                                 fluidRow(
+                                     column(6,
+                                            textInput(inputId="custom_calcValue", label=uiOutput("custom_calcUnit"), value="")
+                                     ),
+                                     column(6,
+                                            selectInput(inputId="custom_calcDegen", label="Solution to find", choices=list(Low='lo', High='hi'),selected='hi')
+                                     )
+                                 ),
                                  selectInput(inputId="custom_calcAxis", label="Variable", choices = {l<-list();
                                                                                                      for(i in 1:length(lookUpTable)) {
-                                                                                                         if(lookUpTable[[i]]$val != 'z' && lookUpTable[[i]]$val != 'AngSize' && lookUpTable[[i]]$val != 'AngDist' && lookUpTable[[i]]$val != 'HubTime' && lookUpTable[[i]]$val != 'UniAgeNow')
+                                                                                                         if(lookUpTable[[i]]$val != 'z' && lookUpTable[[i]]$val != 'HubTime' && lookUpTable[[i]]$val != 'UniAgeNow')
                                                                                                              l[[lookUpTable[[i]]$label]]<-lookUpTable[[i]]$val
                                                                                                      };l},
                                              selected="TravelTime")
@@ -92,6 +107,14 @@ shinyUI(fluidPage(
                          column(6,
                                 textInput(inputId="plotOmegaL", label="OmegaL", value="1-OmegaM")
                          )
+                     ),
+                     fluidRow(
+                          column(6,
+                                textInput(inputId="plotSigma8", label="Sigma8", value="0.8")
+                          ),
+                          column(6,
+                                checkboxInput(inputId="plotfSigma8", label="Calc fSigma8", value=FALSE)
+                          )
                      ),
                      h4("Plot Options:"),
                      fluidRow(
@@ -217,18 +240,18 @@ shinyUI(fluidPage(
                      br(), br(),
                      fluidRow(
                          column(6,
-                                textInput(inputId="sky_lat1", label="Latitude 1 (deg)", value="-2")
+                                textInput(inputId="sky_lat1", label="Declination Low (deg)", value="-2")
                          ),
                          column(6,
-                                textInput(inputId="sky_lat2", label="Latitude 2 (deg)", value="3")
+                                textInput(inputId="sky_lat2", label="Declination High (deg)", value="3")
                          )
                      ),
                      fluidRow(
                          column(6,
-                                textInput(inputId="sky_long1", label="Longitude 1 (deg)", value="129")
+                                textInput(inputId="sky_long1", label="Right Ascension Low (deg)", value="129")
                          ),
                          column(6,
-                                textInput(inputId="sky_long2", label="Longitude 2 (deg)", value="141")
+                                textInput(inputId="sky_long2", label="Right Ascension High (deg)", value="141")
                          )
                      )
                  ),
@@ -254,13 +277,13 @@ shinyUI(fluidPage(
                      "To use this tab, fill in the variables under", strong("Set Variables"), "and click the", actionButton(inputId="dud", label="Calculate", icon("random")),
                      "button to calculate variables at a certain redshift. Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
                      "for all calculations.",
-                     "The", strong("Reference Set"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP)."
+                     "The", strong("Reference Set"), "box lets you set the variables (H0, OmegaM, OmegaL and Sigma8) to a reference set (e.g. Planck, WMAP). The fSigma8 flag varies whether the exact growth rate (f, when fSigma8 is unchecked) or the growth rate times Sigma8 (fSigma8, when fSigma8 ic checked) is computed."
                  ),
                  p(
                      "Under", strong("Custom Calc,"), "the calculation may be done using a chosen variable from the", span("Variable", style="text-decoration:underline;"), "menu.",
                      "When the", span("Value", style="text-decoration:underline;"), "box contains a value, the custom calculation will be used next time the", actionButton(inputId="dud", label="Calculate", icon("random")),
                      "button is clicked.",
-                     "Mappings are not availabe for AngDist (angular diameter distance) or AngSize (physical projected size) because the solutions are ambiguous."
+                     "For ambiguous mappings (e.g. Angulas Size has two possible redshift solutions for many values) you can specify whether the lower redshift or higher redshift solution is found by selecting the respective option from the \'Solution to find\' option box."
                  ),
                  br(),
                  h4("Plot", style='color:#08c'),
@@ -273,7 +296,7 @@ shinyUI(fluidPage(
                      "The first plot is a distance plot, and the second plot is a custom plot which may be modified using the options under", strong("Custom Plot."),
                      "Type '1-OmegaM' into the OmegaL field to set OmegaL to", span("1-OmegaM", style="text-decoration:underline;"),
                      "for all calculations.",
-                     "The", strong("Reference Set"), "box lets you set the variables (H0, OmegaM and OmegaL) to a reference set (e.g. Planck, WMAP).",
+                     "The", strong("Reference Set"), "box lets you set the variables (H0, OmegaM, OmegaL and Sigma8) to a reference set (e.g. Planck, WMAP). The fSigma8 flag varies whether the exact growth rate (f, when fSigma8 is unchecked) or the growth rate times Sigma8 (fSigma8, when fSigma8 ic checked) is computed.",
                      "Some of the plot options are as follows:"
                  ),
                  p(strong("z Start"), "- The starting redshift for the plots."),
@@ -319,7 +342,7 @@ shinyUI(fluidPage(
                                 <td><a href='http://arxiv.org/abs/1001.4538' target='_blank'>Komatsu E., et al., 2010, ApJS, 192, 18 (arXiv:1001.4538)</a></th>
                                 </tr>
                                 <td>WMAP5</th>
-                                <td><a href='http://arxiv.org/abs/0803.0547' target='_blank'>Dunkley J., et al., 2009, ApJS, 180, 306 (arXiv:0803.0547)</a></th>
+                                <td><a href='http://arxiv.org/abs/0803.0547' target='_blank'>Komatsu E., et al., 2009, ApJS, 180, 306 (arXiv:0803.0547)</a></th>
                                 </tr>
                                 <td>WMAP3</th>
                                 <td><a href='http://arxiv.org/abs/astro-ph/0603449' target='_blank'>Spergel D. N., et al., 2007, ApJS, 170, 377 (arXiv:astro-ph/0603449)</a></th>
@@ -447,13 +470,23 @@ function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM,
              ),
              strong("cosgrow"),
              HTML('<pre class="prettyprint lang-r" style="padding:5px">
-                  function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM) 
+                  function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM, 
+    Sigma8 = 0.8, fSigma8 = FALSE, ref) 
 {
     if (!all(is.finite(z))) {
         stop("All z must be finite and numeric")
     }
-    if (!all(z >= 0)) {
+    if (!all(z > -1)) {
         stop("All z must be > -1")
+    }
+    if (!missing(ref)) {
+        params = .getcos(ref)
+        H0 = as.numeric(params["H0"])
+        OmegaM = as.numeric(params["OmegaM"])
+        OmegaL = as.numeric(params["OmegaL"])
+        if (!is.na(params["Sigma8"])) {
+            Sigma8 = as.numeric(params["Sigma8"])
+        }
     }
     OmegaK = 1 - OmegaM - OmegaL
     temp = function(z, H0, OmegaM, OmegaL, OmegaK) {
@@ -471,8 +504,17 @@ function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM,
         Factor = (5 * OmegaM/2) * (Hz/H0) * (1 + z) * integrate(Einva3, 
             0, 1/(1 + z), OmegaM = OmegaM, OmegaL = OmegaL, OmegaK = OmegaK, 
             subdivisions = 1000L)$value
-        Rate = -1 - OmegaMAtz/2 + OmegaLAtz + (5 * OmegaMAtz)/(2 * 
-            Factor)
+        Factor0 = (5 * OmegaM/2) * integrate(Einva3, 0, 1, OmegaM = OmegaM, 
+            OmegaL = OmegaL, OmegaK = OmegaK, subdivisions = 1000L)$value
+        Sigma8Atz = Sigma8 * (Factor/Factor0)/(1 + z)
+        if (fSigma8 == FALSE) {
+            Rate = -1 - OmegaMAtz/2 + OmegaLAtz + (5 * OmegaMAtz)/(2 * 
+                Factor)
+        }
+        else {
+            Rate = Sigma8Atz * (-1 - OmegaMAtz/2 + OmegaLAtz + 
+                (5 * OmegaMAtz)/(2 * Factor))
+        }
         G = 6.67384e-11
         Hub2 = H0 * sqrt(OmegaM * (1 + z)^3 + OmegaK * (1 + z)^2 + 
             OmegaL)
@@ -482,10 +524,10 @@ function (z = 1, H0 = 100, OmegaM = 0.3, OmegaL = 1 - OmegaM,
         RhoCrit = (3 * Hub2)/(8 * pi * G) * (km2m^2) * Mpc2m/Msol2kg
         return = c(z = z, a = 1/(1 + z), H = Hz, OmegaM = OmegaMAtz, 
             OmegaL = OmegaLAtz, OmegaK = OmegaKAtz, Factor = Factor, 
-            Rate = Rate, RhoCrit = RhoCrit)
+            Rate = Rate, Sigma8 = Sigma8Atz, RhoCrit = RhoCrit)
     }
     return(as.data.frame(t(Vectorize(temp)(z = z, H0 = H0, OmegaM = OmegaM, 
-    OmegaL = OmegaL, OmegaK = OmegaK))))
+        OmegaL = OmegaL, OmegaK = OmegaK))))
 }</pre>'
              )
     )

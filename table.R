@@ -17,6 +17,7 @@ lookUpTable <- list("z"=list("label"="z", "unit_r"="", "unit_html"="", "val"="z"
                     "OmegaK"=list("label"="OmegaK", "unit_r"="", "unit_html"="", "val"="OmegaK"),
                     "Factor"=list("label"="Growth Factor", "unit_r"="", "unit_html"="", "val"="Factor"),
                     "Rate"=list("label"="Growth Rate", "unit_r"="", "unit_html"="", "val"="Rate"),
+                    "Sigma8"=list("label"="Sigma8", "unit_r"="", "unit_html"="", "val"="Sigma8"),
                     "RhoCrit"=list("label"="Critical Mass Density", "unit_r"="(10^{10}*Msol/Mpc^{3})", "unit_html"="(10<sup>10</sup>Msol/Mpc<sup>3</sup>)", "val"="RhoCrit")
 )
 
@@ -24,49 +25,56 @@ defaultParams <- list(
     "737"=list(
         "H0"=70.0,
         "OmegaM"=0.30,
-        "OmegaL"=0.70),
+        "OmegaL"=0.70,
+        "Sigma8"=0.80),
+    "137"=list(
+        "H0"=100.0,
+        "OmegaM"=0.30,
+        "OmegaL"=0.70,
+        "Sigma8"=0.80),
     "Planck"=list(
-        "H0"=67.11,
-        "OmegaM"=0.3175,
-        "OmegaL"=0.6825),
-    "Planck + lens"=list(
-        "H0"=68.14,
-        "OmegaM"=0.3036,
-        "OmegaL"=0.6964),
-    "Planck + WP"=list(
-        "H0"=67.04,
-        "OmegaM"=0.3183,
-        "OmegaL"=0.6817),
+        "H0"=67.3,
+        "OmegaM"=0.315,
+        "OmegaL"=0.685,
+        "Sigma8"=0.829),
     "WMAP9"=list(
-        "H0"=69.7,
-        "OmegaM"=0.2821,
-        "OmegaL"=0.7181),
+        "H0"=69.3,
+        "OmegaM"=0.288,
+        "OmegaL"=0.712,
+        "Sigma8"=0.817),
     "WMAP7"=list(
         "H0"=70.4,
-        "OmegaM"=0.2715,
-        "OmegaL"=0.728),
+        "OmegaM"=0.275,
+        "OmegaL"=0.725,
+        "Sigma8"=0.816),
     "WMAP5"=list(
-        "H0"=70.2,
-        "OmegaM"=0.2769,
-        "OmegaL"=0.723),
+        "H0"=70.5,
+        "OmegaM"=0.274,
+        "OmegaL"=0.726,
+        "Sigma8"=0.812),
     "WMAP3"=list(
         "H0"=70.4,
         "OmegaM"=0.268,
-        "OmegaL"=0.732),
+        "OmegaL"=0.732,
+        "Sigma8"=0.776),
     "WMAP1"=list(
         "H0"=72.0,
         "OmegaM"=0.290,
-        "OmegaL"=0.710),
+        "OmegaL"=0.710,
+        "Sigma8"=0.900),
     "Millennium"=list(
         "H0"=73.0,
         "OmegaM"=0.250,
-        "OmegaL"=0.750),
+        "OmegaL"=0.750,
+        "Sigma8"=0.900),
     "GiggleZ"=list(
         "H0"=70.5,
-        "OmegaM"=0.2736,
-        "OmegaL"=0.726),
+        "OmegaM"=0.273,
+        "OmegaL"=0.727,
+        "Sigma8"=0.812),
     "Custom"=list(
         "H0"=0,
         "OmegaM"=0,
-        "OmegaL"=0)
+        "OmegaL"=0,
+        "Sigma8"=0)
     )
