@@ -21,6 +21,7 @@ shinyUI(fluidPage(
     # The Calculation tab #
     #######################
     tabsetPanel(tabPanel("Calculation",
+                         br(),
                          sidebarLayout(
                              sidebarPanel(
                                  actionButton(inputId="submitCalc", label=span("Calculate"), icon("random")),
@@ -88,6 +89,7 @@ shinyUI(fluidPage(
     # The Plot tab #
     ################
     tabPanel("Plot",
+             br(),
              sidebarLayout(
                  sidebarPanel(
                      actionButton(inputId="submitPlot", label="Plot", icon("random")),
@@ -187,6 +189,7 @@ shinyUI(fluidPage(
     # The Survey Design tab #
     #########################
     tabPanel("Survey Design",
+             br(),
              sidebarLayout(
                  sidebarPanel(
                      fluidRow(
@@ -264,6 +267,7 @@ shinyUI(fluidPage(
     # The Info tab #
     ################
     tabPanel("Info",
+             br(),
              div(
                  h3("About"),
                  p(span("Welcome to ICRAR's Cosmology Calculator!", style="color:#08c"),
@@ -364,6 +368,7 @@ shinyUI(fluidPage(
     # The R Code tab #
     ##################
     tabPanel("R Code",
+             br(),
              p("Basic cosmological distance calculator R code used server-side to generate outputs."),
              p("Written by Aaron Robotham as part of the R",a("celestial", href="https://github.com/asgr/celestial", target="_blank"), "package (see", span("Info", style='color:#08c'), "tab for references)."),
              strong("cosdist"),
